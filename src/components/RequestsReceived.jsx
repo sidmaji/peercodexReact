@@ -12,6 +12,7 @@ const RequestsReceived = () => {
     const [showDisclaimer, setShowDisclaimer] = useState(false);
     const [actionLoading, setActionLoading] = useState(false);
     const [toastMsg, setToastMsg] = useState('');
+    const [pointsReceived, setPointsReceived] = useState({});
 
     useEffect(() => {
         const fetchRequests = async () => {
@@ -41,9 +42,30 @@ const RequestsReceived = () => {
                 } else {
                     setRequesterProfiles({});
                 }
+                // Fetch points received for each mentee
+                const pointsMap = {};
+                for (const req of reqs) {
+                    if (req.status === 'accepted' && req.requestedui) {
+                        try {
+                            const pointsDoc = await getDocs(query(collection(db, `users/${currentUser.uid}/points`)));
+                            let points = 0;
+                            pointsDoc.forEach(docSnap => {
+                                if (docSnap.id === req.requestedui) {
+                                    points = docSnap.data().points || 0;
+                                }
+                            });
+                            pointsMap[req.requestedui] = points;
+                        } catch (error) {
+                            console.error('Error fetching points for user:', req.requestedui, error);
+                            pointsMap[req.requestedui] = 0; // Default to 0 if error occurs
+                        }
+                    }
+                }
+                setPointsReceived(pointsMap);
             } catch {
                 setRequests([]);
                 setRequesterProfiles({});
+                setPointsReceived({});
             }
             setLoading(false);
         };
@@ -105,7 +127,16 @@ const RequestsReceived = () => {
                                     </div>
                                     <div className="text-sm text-gray-700 mt-2">{req.message}</div>
                                     {req.status === 'accepted' && (
-                                        <div className="mt-2 text-xs text-gray-500">Your phone number and Discord have been shared.</div>
+                                        <>
+                                            <div className="mt-2 text-xs text-gray-500">Your phone number and Discord have been shared.</div>
+                                            <div className="mt-3 flex items-center gap-2">
+                                                <span className="inline-flex items-center px-3 py-1 rounded-full bg-yellow-100 text-yellow-800 font-bold text-sm shadow-md">
+                                                    {/* Trophy icon from Heroicons */}
+                                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-1 text-yellow-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 21h8m-8 0a4 4 0 008 0m-8 0V5a2 2 0 012-2h4a2 2 0 012 2v16m-8 0h8" /></svg>
+                                                    {pointsReceived[req.requestedui] ?? 0} Points Awarded
+                                                </span>
+                                            </div>
+                                        </>
                                     )}
                                 </div>
                             );

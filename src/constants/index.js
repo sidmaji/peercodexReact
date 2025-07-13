@@ -1,3 +1,14 @@
+// Allowed test emails for signup bypass (case-insensitive)
+export const ALLOWED_TEST_EMAILS = new Set([
+  'wfmgift1@gmail.com',
+  'wfmgift11@gmail.com',
+  'wfmgift7@gmail.com',
+  '00sidaddy00@gmail.com',
+  'somebodyimportant0@gmail.com',
+  'siddhant.maji@gmail.com',
+  'arsh.maji@gmail.com',
+  'arshia.gulati@gmail.com',
+]);
 // Academic subjects and constants for PeerCodex platform
 
 export const AP_SUBJECTS = [

@@ -12,9 +12,11 @@ import RequestsReceived from './RequestsReceived';
 import RequestsSent from './RequestsSent';
 
 const Dashboard = () => {
+  const [totalPointsReceived, setTotalPointsReceived] = useState(0);
   const { currentUser, userProfile, logout } = useAuth();
   const [sentCounts, setSentCounts] = useState({ accepted: 0, pending: 0, rejected: 0 });
   const [receivedCounts, setReceivedCounts] = useState({ accepted: 0, pending: 0, rejected: 0 });
+  // Removed duplicate declaration of totalPointsReceived
 
   useEffect(() => {
     const fetchRequestCounts = async () => {
@@ -44,6 +46,17 @@ const Dashboard = () => {
       setReceivedCounts(received);
     };
     fetchRequestCounts();
+    // Fetch total points received for mentor
+    const fetchTotalPoints = async () => {
+      if (!currentUser?.uid) return;
+      const pointsSnap = await getDocs(collection(db, `users/${currentUser.uid}/points`));
+      let total = 0;
+      pointsSnap.forEach(doc => {
+        total += doc.data().points || 0;
+      });
+      setTotalPointsReceived(total);
+    };
+    fetchTotalPoints();
   }, [currentUser]);
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const [activeSection, setActiveSection] = useState('overview');
@@ -68,7 +81,7 @@ const Dashboard = () => {
   const renderContent = () => {
     switch (activeSection) {
       case 'overview':
-        return <OverviewContent userProfile={userProfile} currentUser={currentUser} sentCounts={sentCounts} receivedCounts={receivedCounts} />;
+        return <OverviewContent userProfile={userProfile} currentUser={currentUser} sentCounts={sentCounts} receivedCounts={receivedCounts} totalPointsReceived={totalPointsReceived} />;
       case 'profile':
         return <Profile standalone={false} />;
       case 'find-mentor':
@@ -78,7 +91,7 @@ const Dashboard = () => {
       case 'requests-sent':
         return <RequestsSent />;
       default:
-        return <OverviewContent userProfile={userProfile} currentUser={currentUser} sentCounts={sentCounts} receivedCounts={receivedCounts} />;
+        return <OverviewContent userProfile={userProfile} currentUser={currentUser} sentCounts={sentCounts} receivedCounts={receivedCounts} totalPointsReceived={totalPointsReceived} />;
     }
   };
 
@@ -180,7 +193,7 @@ const Dashboard = () => {
 };
 
 // Content Components
-const OverviewContent = ({ userProfile, currentUser, sentCounts, receivedCounts }) => (
+const OverviewContent = ({ userProfile, currentUser, sentCounts, receivedCounts, totalPointsReceived }) => (
   <div className="space-y-6">
     <div className="bg-white rounded-lg shadow p-6">
       <h2 className="text-xl font-semibold text-gray-900 mb-4 flex items-center gap-2">
@@ -190,7 +203,6 @@ const OverviewContent = ({ userProfile, currentUser, sentCounts, receivedCounts 
       <p className="text-gray-600 mb-6">
         Here's what's happening in your PeerCodex journey today.
       </p>
-      
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
         <div className="bg-gradient-to-r from-blue-50 to-blue-100 rounded-lg p-4">
           <h3 className="font-semibold text-blue-900">Mentor Requests Sent</h3>
@@ -210,12 +222,15 @@ const OverviewContent = ({ userProfile, currentUser, sentCounts, receivedCounts 
             Accepted: {receivedCounts.accepted} | Pending: {receivedCounts.pending} | Rejected: {receivedCounts.rejected}
           </p>
         </div>
-        <div className="bg-gradient-to-r from-purple-50 to-purple-100 rounded-lg p-4">
-          <h3 className="font-semibold text-purple-900">Subjects</h3>
-          <p className="text-2xl font-bold text-purple-700">
-            { (userProfile?.mentorSubjects?.length || 0)}
+        <div className="bg-gradient-to-r from-yellow-50 to-yellow-100 rounded-lg p-4 flex flex-col items-start justify-center">
+          <h3 className="font-semibold text-yellow-900 flex items-center gap-2">
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-yellow-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 21h8m-8 0a4 4 0 008 0m-8 0V5a2 2 0 012-2h4a2 2 0 012 2v16m-8 0h8" /></svg>
+            Total Points Received
+          </h3>
+          <p className="text-2xl font-bold text-yellow-700">
+            {totalPointsReceived}
           </p>
-          <p className="text-sm text-purple-600">Mentoring</p>
+          <p className="text-sm text-yellow-600">From mentees </p>
         </div>
       </div>
     </div>

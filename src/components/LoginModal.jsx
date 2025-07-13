@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { ALLOWED_TEST_EMAILS } from '../constants';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import Modal from './Modal';
@@ -9,6 +10,7 @@ const LoginModal = ({ isOpen, onClose, onSwitchToSignup }) => {
     password: ''
   });
   const [loading, setLoading] = useState(false);
+  const [emailError, setEmailError] = useState('');
   const { login } = useAuth();
   const navigate = useNavigate();
 
@@ -22,11 +24,17 @@ const LoginModal = ({ isOpen, onClose, onSwitchToSignup }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const emailLower = formData.email.trim().toLowerCase();
+    if (!emailLower.endsWith('@k12.friscoisd.org') && !ALLOWED_TEST_EMAILS.has(emailLower)) {
+      setEmailError('Use your school email only (must end with @k12.friscoisd.org)');
+      return;
+    } else {
+      setEmailError('');
+    }
+
     setLoading(true);
-    
     try {
       const result = await login(formData.email, formData.password);
-      
       if (result.needsVerification) {
         navigate('/verify-email');
       } else {
@@ -56,9 +64,12 @@ const LoginModal = ({ isOpen, onClose, onSwitchToSignup }) => {
           required
           value={formData.email}
           onChange={handleChange}
-          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-          placeholder="Email address"
+          className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 ${emailError ? 'border-red-500' : 'border-gray-300'}`}
+          placeholder="first.last.xyz@k12.friscoisd.org"
         />
+        {emailError && (
+          <p className="text-red-600 text-xs mt-1">{emailError}</p>
+        )}
 
         <input
           id="password"

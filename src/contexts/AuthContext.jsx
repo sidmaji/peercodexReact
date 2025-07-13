@@ -152,9 +152,31 @@ export const AuthProvider = ({ children }) => {
       }
       setLoading(false);
     });
-
     return unsubscribe;
   }, []);
+
+  // Points balance check runs every time currentUser changes
+  useEffect(() => {
+    const checkPointBalance = async () => {
+      if (!currentUser?.uid) return;
+      try {
+        const now = new Date();
+        const currentMonthYear = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+        const balanceRef = doc(db, 'users', currentUser.uid, 'pointBalance', 'main');
+        const balanceSnap = await getDoc(balanceRef);
+        if (!balanceSnap.exists() || balanceSnap.data().monthYear !== currentMonthYear) {
+          await setDoc(balanceRef, {
+            monthYear: currentMonthYear,
+            balance: 50
+          });
+        }
+        //console.log('Point balance set for current month:', currentMonthYear);
+      } catch (err) {
+        console.error('Error setting point balance:', err);
+      }
+    };
+    checkPointBalance();
+  }, [currentUser]);
 
   const value = {
     currentUser,
