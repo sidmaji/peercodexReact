@@ -1,66 +1,66 @@
-@import "tailwindcss";
+@import 'tailwindcss';
 
 /* Custom animations for Tailwind v4 */
 @keyframes fade-in {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 .animate-fade-in {
-  animation: fade-in 0.6s ease-out;
+    animation: fade-in 0.6s ease-out;
 }
 
 /* Enhanced scroll behavior */
 html {
-  scroll-behavior: smooth;
+    scroll-behavior: smooth;
 }
 
 /* Custom gradient text support */
 .bg-clip-text {
-  background-clip: text;
-  -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-background-clip: text;
 }
 
 .text-transparent {
-  color: transparent;
+    color: transparent;
 }
 
 /* Enhanced backdrop blur for better browser support */
 .backdrop-blur-sm {
-  backdrop-filter: blur(4px);
-  -webkit-backdrop-filter: blur(4px);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
 }
 
 .backdrop-blur-md {
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
 }
 
 /* Custom shadow utilities */
 .shadow-2xl {
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
 }
 
 /* Enhanced transition utilities */
 .transition-all {
-  transition-property: all;
-  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-property: all;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .ease-in-out {
-  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .duration-200 {
-  transition-duration: 200ms;
+    transition-duration: 200ms;
 }
 
 .duration-300 {
-  transition-duration: 300ms;
+    transition-duration: 300ms;
 }
