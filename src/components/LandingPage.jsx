@@ -88,7 +88,7 @@ const LandingPage = () => {
             <div className="min-h-[60vh] flex items-center justify-center pt-8 pb-8">
                 <div className="w-full text-center animate-fade-in">
                     <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-4 leading-tight">
-                        Connect. Learn. <span className="text-indigo-600 bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">Grow.</span>
+                        Connect. Learn. <span className="text-indigo-600 bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text">Grow.</span>
                     </h1>
                     <p className="text-base sm:text-lg md:text-xl lg:text-2xl text-gray-600 mb-4 leading-relaxed px-2">
                         PeerCodex brings together high school students for peer-to-peer mentoring in AP subjects and academic coursework.
@@ -117,7 +117,7 @@ const LandingPage = () => {
             {/* Features Section */}
             <div className="min-h-[40vh] flex items-center justify-center bg-white">
                 <div className="w-full py-10">
-                    <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-center text-gray-900 mb-8 bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent px-2">
+                    <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-center text-gray-900 mb-8 bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text px-2">
                         How PeerCodex Works
                     </h2>
                     <div className="grid lg:grid-cols-3 gap-4 px-2 lg:px-6 xl:px-10 2xl:px-16">
