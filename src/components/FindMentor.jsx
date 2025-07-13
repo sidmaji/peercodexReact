@@ -86,8 +86,13 @@ const FindMentor = ({ onSearch }) => {
   return (
     <div className="bg-white rounded-xl shadow-lg p-6">
       <div className="w-full">
-        <h1 className="text-3xl font-bold text-gray-900 mb-6">Find Mentor</h1>
-        <form onSubmit={handleSearch} className="bg-white rounded-xl shadow-lg p-8 space-y-8">
+        {/* Header Section */}
+        <div className="mb-6 ">
+          <h2 className="text-2xl font-bold text-indigo-700">Find Your Mentor</h2>
+          <p className="text-gray-500 mt-2 text-base">Search for mentors by subject, school, or grade. Connect and start learning together!</p>
+        </div>
+
+         <form onSubmit={handleSearch} className="bg-white rounded-xl shadow-lg p-8 space-y-8">
           {/* School Dropdown */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">School</label>

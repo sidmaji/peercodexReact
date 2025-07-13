@@ -1,6 +1,7 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import { AuthProvider } from './contexts/AuthContext.jsx';
+import ThemeProvider from './context/ThemeContext.jsx';
 import { useAuth } from './hooks/useAuth';
 import LandingPage from './components/LandingPage';
 import VerifyEmailPage from './components/VerifyEmailPage';
@@ -39,6 +40,7 @@ function App() {
   return (
     <Router>
       <AuthProvider>
+        <ThemeProvider>
         <Routes>
           {/* Landing page (always accessible) */}
           <Route path="/" element={
@@ -73,6 +75,7 @@ function App() {
           {/* Fallback route */}
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
+        </ThemeProvider>
         
         {/* Toast notifications */}
         <Toaster 

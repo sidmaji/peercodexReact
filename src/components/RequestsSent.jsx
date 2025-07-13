@@ -64,11 +64,14 @@ const RequestsSent = () => {
   return (
 
     <div className="bg-white rounded-xl shadow-lg p-8">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold text-gray-900">Requests Sent</h1>
-      </div>
+       {/* Header Section */}
+        <div className="mb-2">
+            <h2 className="text-2xl font-bold text-indigo-700">Requests Sent</h2>
+            <p className="text-gray-500 mt-2 text-base">Mentor Requests You've Sent</p>
+        </div>
+
       <div className="mb-8">
-        <h2 className="text-lg font-semibold text-gray-900 mb-4">Mentor Requests You've Sent</h2>
+       
         {loading ? (
           <div className="text-center text-gray-500 py-8">Loading requests...</div>
         ) : requests.length === 0 ? (
