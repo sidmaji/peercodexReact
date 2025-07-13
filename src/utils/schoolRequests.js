@@ -4,7 +4,7 @@ import { toast } from 'react-hot-toast';
 
 export const submitSchoolRequest = async (schoolName, userUid) => {
   try {
-    await addDoc(collection(db, 'requests'), {
+    await addDoc(collection(db, 'schoolrequests'), {
       type: 'school_add',
       desc: schoolName,
       requesteeui: userUid,
