@@ -4,7 +4,7 @@ import { SCHOOLS, GRADE_LEVELS } from '../constants';
 import { submitSchoolRequest } from '../utils/schoolRequests';
 import { toast } from 'react-hot-toast';
 
-const OnboardingDetails = ({ onNext, onBack }) => {
+const OnboardingDetails = ({ onNext }) => {
   const { currentUser } = useAuth();
   const [formData, setFormData] = useState({
     school: '',

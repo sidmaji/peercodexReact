@@ -2,9 +2,49 @@ import { useState } from 'react';
 import { useAuth } from '../hooks/useAuth';
 import { toast } from 'react-hot-toast';
 import Profile from './Profile';
+import { HomeIcon, UserCircleIcon, AcademicCapIcon, InboxIcon, PaperAirplaneIcon } from '@heroicons/react/24/outline';
+import { SparklesIcon } from '@heroicons/react/24/outline';
+import { useEffect } from 'react';
+import { collection, query, where, getDocs } from 'firebase/firestore';
+import { db } from '../firebase';
+import FindMentor from './FindMentor';
+import RequestsReceived from './RequestsReceived';
+import RequestsSent from './RequestsSent';
 
 const Dashboard = () => {
   const { currentUser, userProfile, logout } = useAuth();
+  const [sentCounts, setSentCounts] = useState({ accepted: 0, pending: 0, rejected: 0 });
+  const [receivedCounts, setReceivedCounts] = useState({ accepted: 0, pending: 0, rejected: 0 });
+
+  useEffect(() => {
+    const fetchRequestCounts = async () => {
+      if (!currentUser?.uid) return;
+      // Sent requests
+      const sentQ = query(collection(db, 'requests'), where('requestedui', '==', currentUser.uid));
+      const sentSnap = await getDocs(sentQ);
+      const sent = { accepted: 0, pending: 0, rejected: 0 };
+      sentSnap.forEach(doc => {
+        const status = doc.data().status;
+        if (status === 'accepted') sent.accepted++;
+        else if (status === 'pending') sent.pending++;
+        else if (status === 'rejected' || status === 'cancelled') sent.rejected++;
+      });
+      setSentCounts(sent);
+
+      // Received requests
+      const receivedQ = query(collection(db, 'requests'), where('requesteeui', '==', currentUser.uid));
+      const receivedSnap = await getDocs(receivedQ);
+      const received = { accepted: 0, pending: 0, rejected: 0 };
+      receivedSnap.forEach(doc => {
+        const status = doc.data().status;
+        if (status === 'accepted') received.accepted++;
+        else if (status === 'pending') received.pending++;
+        else if (status === 'rejected' || status === 'cancelled') received.rejected++;
+      });
+      setReceivedCounts(received);
+    };
+    fetchRequestCounts();
+  }, [currentUser]);
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const [activeSection, setActiveSection] = useState('overview');
 
@@ -18,39 +58,27 @@ const Dashboard = () => {
   };
 
   const navigationItems = [
-    { id: 'overview', label: 'Overview', icon: '📊', available: true },
-    { id: 'profile', label: 'My Profile', icon: '👤', available: true },
-    { id: 'find-help', label: 'Find Help', icon: '🔍', available: true },
-    { id: 'help-requests', label: 'Help Requests', icon: '📤', available: true },
-    { id: 'mentor-requests', label: 'Mentor Requests', icon: '📥', available: true },
-    { id: 'connections', label: 'My Connections', icon: '👥', available: true },
-    { id: 'sessions', label: 'Study Sessions', icon: '📚', available: true },
-    { id: 'messages', label: 'Messages', icon: '💬', available: true },
-    { id: 'settings', label: 'Settings', icon: '⚙️', available: true },
+    { id: 'overview', label: 'Overview', icon: <HomeIcon className="w-6 h-6" />, available: true },
+    { id: 'profile', label: 'My Profile', icon: <UserCircleIcon className="w-6 h-6" />, available: true },
+    { id: 'find-mentor', label: 'Find Mentor', icon: <AcademicCapIcon className="w-6 h-6" />, available: true },
+    { id: 'mentor-requests', label: 'Requests Received', icon: <InboxIcon className="w-6 h-6" />, available: true },
+    { id: 'requests-sent', label: 'Requests Sent', icon: <PaperAirplaneIcon className="w-6 h-6" />, available: true },
   ];
 
   const renderContent = () => {
     switch (activeSection) {
       case 'overview':
-        return <OverviewContent userProfile={userProfile} currentUser={currentUser} />;
+        return <OverviewContent userProfile={userProfile} currentUser={currentUser} sentCounts={sentCounts} receivedCounts={receivedCounts} />;
       case 'profile':
         return <Profile standalone={false} />;
-      case 'find-help':
-        return <FindHelpContent />;
-      case 'help-requests':
-        return <HelpRequestsContent />;
+      case 'find-mentor':
+        return <FindMentor />;
       case 'mentor-requests':
-        return <MentorRequestsContent />;
-      case 'connections':
-        return <ConnectionsContent />;
-      case 'sessions':
-        return <SessionsContent />;
-      case 'messages':
-        return <MessagesContent />;
-      case 'settings':
-        return <SettingsContent />;
+        return <RequestsReceived />;
+      case 'requests-sent':
+        return <RequestsSent />;
       default:
-        return <OverviewContent userProfile={userProfile} currentUser={currentUser} />;
+        return <OverviewContent userProfile={userProfile} currentUser={currentUser} sentCounts={sentCounts} receivedCounts={receivedCounts} />;
     }
   };
 
@@ -68,7 +96,6 @@ const Dashboard = () => {
             )}
             <button
               onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
-              className="p-1 rounded-md hover:bg-gray-100 transition-colors"
             >
               <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} 
@@ -86,12 +113,14 @@ const Dashboard = () => {
               onClick={() => setActiveSection(item.id)}
               className={`w-full flex items-center space-x-3 p-3 rounded-lg text-left transition-all duration-200 ${
                 activeSection === item.id
-                  ? 'bg-indigo-50 text-indigo-700 border-r-4 border-indigo-600'
+                  ? isSidebarCollapsed
+                    ? 'bg-indigo-50 text-indigo-700' // No border when collapsed
+                    : 'bg-indigo-50 text-indigo-700 border-r-4 border-indigo-600'
                   : 'text-gray-700 hover:bg-gray-50'
-              }`}
+              } ${isSidebarCollapsed ? 'justify-center p-2' : ''}`}
               title={isSidebarCollapsed ? item.label : ''}
             >
-              <span className="text-xl">{item.icon}</span>
+              <span className="text-xl flex items-center justify-center">{item.icon}</span>
               {!isSidebarCollapsed && (
                 <span className="font-medium">{item.label}</span>
               )}
@@ -132,7 +161,7 @@ const Dashboard = () => {
               {/* Sign Out Button */}
               <button
                 onClick={handleSignOut}
-                className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors"
+                className="px-4 py-2 text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 rounded-lg transition-colors"
               >
                 Sign Out
               </button>
@@ -150,11 +179,12 @@ const Dashboard = () => {
 };
 
 // Content Components
-const OverviewContent = ({ userProfile, currentUser }) => (
+const OverviewContent = ({ userProfile, currentUser, sentCounts, receivedCounts }) => (
   <div className="space-y-6">
     <div className="bg-white rounded-lg shadow p-6">
-      <h2 className="text-xl font-semibold text-gray-900 mb-4">
-        Welcome back, {userProfile?.firstName}! 👋
+      <h2 className="text-xl font-semibold text-gray-900 mb-4 flex items-center gap-2">
+        Welcome back, {userProfile?.firstName}!
+        <SparklesIcon className="w-6 h-6 text-indigo-500 inline" />
       </h2>
       <p className="text-gray-600 mb-6">
         Here's what's happening in your PeerCodex journey today.
@@ -162,23 +192,29 @@ const OverviewContent = ({ userProfile, currentUser }) => (
       
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
         <div className="bg-gradient-to-r from-blue-50 to-blue-100 rounded-lg p-4">
-          <h3 className="font-semibold text-blue-900">Active Sessions</h3>
-          <p className="text-2xl font-bold text-blue-700">3</p>
-          <p className="text-sm text-blue-600">Upcoming this week</p>
+          <h3 className="font-semibold text-blue-900">Mentor Requests Sent</h3>
+          <p className="text-2xl font-bold text-blue-700">
+            {sentCounts.accepted + sentCounts.pending + sentCounts.rejected}
+          </p>
+          <p className="text-sm text-blue-600">
+            Accepted: {sentCounts.accepted} | Pending: {sentCounts.pending} | Rejected: {sentCounts.rejected}
+          </p>
         </div>
-        
         <div className="bg-gradient-to-r from-green-50 to-green-100 rounded-lg p-4">
-          <h3 className="font-semibold text-green-900">Connections</h3>
-          <p className="text-2xl font-bold text-green-700">12</p>
-          <p className="text-sm text-green-600">Mentors & Mentees</p>
+          <h3 className="font-semibold text-green-900">Mentor Requests Received</h3>
+          <p className="text-2xl font-bold text-green-700">
+            {receivedCounts.accepted + receivedCounts.pending + receivedCounts.rejected}
+          </p>
+          <p className="text-sm text-green-600">
+            Accepted: {receivedCounts.accepted} | Pending: {receivedCounts.pending} | Rejected: {receivedCounts.rejected}
+          </p>
         </div>
-        
         <div className="bg-gradient-to-r from-purple-50 to-purple-100 rounded-lg p-4">
           <h3 className="font-semibold text-purple-900">Subjects</h3>
           <p className="text-2xl font-bold text-purple-700">
-            {(userProfile?.menteeSubjects?.length || 0) + (userProfile?.mentorSubjects?.length || 0)}
+            { (userProfile?.mentorSubjects?.length || 0)}
           </p>
-          <p className="text-sm text-purple-600">Learning & Teaching</p>
+          <p className="text-sm text-purple-600">Mentoring</p>
         </div>
       </div>
     </div>
@@ -218,25 +254,7 @@ const OverviewContent = ({ userProfile, currentUser }) => (
       </div>
     </div>
 
-    <div className="bg-white rounded-lg shadow p-6">
-      <h2 className="text-lg font-semibold text-gray-900 mb-4">Recent Activity</h2>
-      <div className="space-y-3">
-        <div className="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
-          <span className="text-green-500">✅</span>
-          <div>
-            <p className="text-sm font-medium">Profile setup completed</p>
-            <p className="text-xs text-gray-500">Welcome to PeerCodex!</p>
-          </div>
-        </div>
-        <div className="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
-          <span className="text-blue-500">📚</span>
-          <div>
-            <p className="text-sm font-medium">Ready to start your mentoring journey</p>
-            <p className="text-xs text-gray-500">Explore the features in the sidebar</p>
-          </div>
-        </div>
-      </div>
-    </div>
+    
   </div>
 );
 

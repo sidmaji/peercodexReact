@@ -4,6 +4,8 @@ import { doc, updateDoc } from 'firebase/firestore';
 import { db } from '../firebase';
 import { toast } from 'react-hot-toast';
 import { AP_SUBJECTS, SCHOOLS, GRADE_LEVELS } from '../constants';
+import { BuildingLibraryIcon } from '@heroicons/react/24/outline';
+import { AcademicCapIcon } from '@heroicons/react/24/outline';
 import { submitSchoolRequest } from '../utils/schoolRequests';
 
 const Profile = ({ standalone = true }) => {
@@ -302,7 +304,12 @@ const Profile = ({ standalone = true }) => {
                       {school}
                     </option>
                   ))}
-                  <option value="REQUEST_NEW_SCHOOL">🏫 Request to add my school</option>
+                <option value="REQUEST_NEW_SCHOOL">
+                  <span className="inline-flex items-center gap-1">
+                    <BuildingLibraryIcon className="w-5 h-5 text-indigo-500 inline" />
+                    Request to add my school
+                  </span>
+                </option>
                 </select>
                 {errors.school && (
                   <p className="mt-1 text-sm text-red-600">{errors.school}</p>
@@ -437,7 +444,10 @@ const Profile = ({ standalone = true }) => {
       {/* Mentoring Subjects */}
       <div className="mb-8">
         <h2 className="text-lg font-semibold text-gray-900 mb-4">
-          🎓 Subjects I Can Mentor
+          <span className="inline-flex items-center gap-2">
+            <AcademicCapIcon className="w-5 h-5 text-indigo-500 inline" />
+            Subjects I Can Mentor
+          </span>
         </h2>
         <p className="text-gray-600 mb-4">
           Select subjects where you feel confident helping other students.

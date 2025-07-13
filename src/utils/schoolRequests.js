@@ -7,7 +7,7 @@ export const submitSchoolRequest = async (schoolName, userUid) => {
     await addDoc(collection(db, 'requests'), {
       type: 'school_add',
       desc: schoolName,
-      userRequest: userUid,
+      requesteeui: userUid,
       status: 'pending',
       createdAt: new Date(),
       updatedAt: new Date()

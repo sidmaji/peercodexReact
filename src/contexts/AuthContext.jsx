@@ -9,6 +9,7 @@ import {
 import { doc, setDoc, getDoc } from 'firebase/firestore';
 import { auth, db } from '../firebase';
 import { AuthContext } from './authContext';
+
 import toast from 'react-hot-toast';
 
 export const AuthProvider = ({ children }) => {

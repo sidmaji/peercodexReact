@@ -78,13 +78,13 @@ function App() {
         <Toaster 
           position="top-right"
           toastOptions={{
-            duration: 2000,
+            duration: 1000,
             style: {
               background: '#363636',
               color: '#fff',
             },
             success: {
-              duration: 2000,
+              duration: 1000,
               theme: {
                 primary: '#4ade80',
                 secondary: '#000',
