@@ -17,7 +17,8 @@ const Marketplace = () => {
         contact: '',
     })
     const [loading, setLoading] = useState(false)
-    const [formLoading, setFormLoading] = useState(false) // <-- add this
+    const [formLoading, setFormLoading] = useState(false)
+    const [formErrors, setFormErrors] = useState({})
 
     // Fetch books from Firestore
     const fetchBooks = async () => {
@@ -48,7 +49,16 @@ const Marketplace = () => {
             toast.error('You must be logged in to list a book.')
             return
         }
-        setFormLoading(true) // <-- use formLoading for modal
+
+        // Phone validation (contact field)
+        const phoneRegex = /^\+?[\d\s\-()]{7,}$/
+        if (!form.contact.trim() || !phoneRegex.test(form.contact.trim())) {
+            setFormErrors({ contact: 'Please enter a valid phone number.' })
+            return
+        }
+        setFormErrors({})
+
+        setFormLoading(true)
         try {
             const listedDate = new Date().toISOString()
             await addDoc(collection(db, 'marketplace'), {
@@ -76,7 +86,7 @@ const Marketplace = () => {
         } catch (err) {
             toast.error('Failed to list book' + err.message)
         }
-        setFormLoading(false) // <-- use formLoading for modal
+        setFormLoading(false)
     }
 
     const handleUpdateStatus = async (bookId, newStatus) => {
@@ -89,96 +99,128 @@ const Marketplace = () => {
             await updateDoc(doc(db, 'marketplace', bookId), { status: newStatus })
             toast.success('Status updated')
             fetchBooks()
-        } catch (err) {
+        } catch {
             toast.error('Failed to update status')
         }
     }
 
     return (
-        <div className="max-w-3xl mx-auto py-8">
-            <h1 className="text-3xl font-bold mb-6 text-indigo-700">Marketplace - Used Books</h1>
-            <div className="mb-4">
+        <div className="bg-white rounded-xl shadow-lg p-6">
+            <div className="flex justify-between items-center mb-6">
+                <div>
+                    <h1 className="text-2xl font-bold text-gray-900">Used Books</h1>
+                    <div className="flex items-center mt-2">
+                        <span className="text-sm text-gray-600">Listings are automatically removed after <span className="font-semibold text-indigo-600">60 days</span>.</span>
+                    </div>
+                </div>
                 <button
-                    className="px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700"
                     onClick={() => setShowForm(true)}
+                    className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors"
                 >
-                    Add Book
+                    + List a Book
                 </button>
             </div>
-            <p className="mb-4 text-sm text-gray-600">
-                Listings will be automatically removed after 60 days.
-            </p>
+
             {/* Modal */}
             {showForm && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
-                    <div className="bg-white rounded-lg p-6 shadow-lg w-full max-w-lg">
-                        <h2 className="text-xl font-bold mb-4">List a Book</h2>
-                        <form onSubmit={handleAddBook}>
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <input
-                                    name="name"
-                                    value={form.name}
-                                    onChange={handleChange}
-                                    placeholder="Book Name"
-                                    required
-                                    className="px-3 py-2 border rounded"
-                                />
-                                <input
-                                    name="author"
-                                    value={form.author}
-                                    onChange={handleChange}
-                                    placeholder="Author"
-                                    required
-                                    className="px-3 py-2 border rounded"
-                                />
-                                <input
-                                    name="year"
-                                    value={form.year}
-                                    onChange={handleChange}
-                                    placeholder="Year"
-                                    type="number"
-                                    required
-                                    className="px-3 py-2 border rounded"
-                                />
-                                <select
-                                    name="condition"
-                                    value={form.condition}
-                                    onChange={handleChange}
-                                    className="px-3 py-2 border rounded"
-                                >
-                                    <option value="new">New</option>
-                                    <option value="like new">Like New</option>
-                                    <option value="marked">Marked</option>
-                                </select>
-                                <input
-                                    name="price"
-                                    value={form.price}
-                                    onChange={handleChange}
-                                    placeholder="Price"
-                                    type="number"
-                                    required
-                                    className="px-3 py-2 border rounded"
-                                />
-                                <input
-                                    name="contact"
-                                    value={form.contact}
-                                    onChange={handleChange}
-                                    placeholder="Contact Info"
-                                    required
-                                    className="px-3 py-2 border rounded"
-                                />
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
+                    <div className="bg-white rounded-xl shadow-lg w-full max-w-xl p-6 relative border-2 border-indigo-400">
+                        <button
+                            type="button"
+                            className="absolute top-4 right-4 text-white bg-indigo-600 hover:bg-indigo-700 font-bold text-2xl w-10 h-10 flex items-center justify-center rounded-full shadow focus:outline-none focus:ring-2 focus:ring-indigo-500 transition"
+                            onClick={() => setShowForm(false)}
+                            aria-label="Close"
+                        >
+                            &times;
+                        </button>
+                        <h2 className="text-2xl font-bold mb-6 text-center text-indigo-700">List a Book</h2>
+                        <form onSubmit={handleAddBook} className="space-y-4">
+                            <div className="grid md:grid-cols-2 gap-4">
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">Book Name *</label>
+                                    <input
+                                        name="name"
+                                        value={form.name}
+                                        onChange={handleChange}
+                                        placeholder="Book Name"
+                                        required
+                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500"
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">Author *</label>
+                                    <input
+                                        name="author"
+                                        value={form.author}
+                                        onChange={handleChange}
+                                        placeholder="Author"
+                                        required
+                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500"
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">Year *</label>
+                                    <input
+                                        name="year"
+                                        value={form.year}
+                                        onChange={handleChange}
+                                        placeholder="Year"
+                                        type="number"
+                                        required
+                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500"
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">Condition *</label>
+                                    <select
+                                        name="condition"
+                                        value={form.condition}
+                                        onChange={handleChange}
+                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500"
+                                    >
+                                        <option value="new">New</option>
+                                        <option value="like new">Like New</option>
+                                        <option value="marked">Marked</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">Price *</label>
+                                    <input
+                                        name="price"
+                                        value={form.price}
+                                        onChange={handleChange}
+                                        placeholder="Price"
+                                        type="number"
+                                        required
+                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500"
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">Contact Info *</label>
+                                    <input
+                                        name="contact"
+                                        value={form.contact}
+                                        onChange={handleChange}
+                                        placeholder="Contact Info (Phone number)"
+                                        required
+                                        className={`w-full px-3 py-2 border rounded-lg focus:ring-indigo-500 focus:border-indigo-500 ${formErrors.contact ? 'border-red-500' : 'border-gray-300'}`}
+                                    />
+                                    {formErrors.contact && (
+                                        <p className="mt-1 text-sm text-red-600">{formErrors.contact}</p>
+                                    )}
+                                </div>
                             </div>
-                            <div className="flex justify-end mt-6 space-x-2">
+                            <div className="flex justify-end mt-8 space-x-2">
                                 <button
                                     type="button"
-                                    className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400"
+                                    className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:border-gray-400 transition-colors"
                                     onClick={() => setShowForm(false)}
                                 >
                                     Cancel
                                 </button>
                                 <button
                                     type="submit"
-                                    className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
+                                    className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors disabled:opacity-50"
                                     disabled={formLoading}
                                 >
                                     {formLoading ? 'Listing...' : 'List Book'}
@@ -188,49 +230,53 @@ const Marketplace = () => {
                     </div>
                 </div>
             )}
-            <table className="min-w-full bg-white rounded shadow">
-                <thead>
-                    <tr>
-                        <th className="py-2 px-4 border-b">Book Name</th>
-                        <th className="py-2 px-4 border-b">Author</th>
-                        <th className="py-2 px-4 border-b">Year</th>
-                        <th className="py-2 px-4 border-b">Condition</th>
-                        <th className="py-2 px-4 border-b">Price ($)</th>
-                        <th className="py-2 px-4 border-b">Contact</th>
-                        <th className="py-2 px-4 border-b">Listed By</th>
-                        <th className="py-2 px-4 border-b">Listed Date</th>
-                        <th className="py-2 px-4 border-b">Status</th>
-                        <th className="py-2 px-4 border-b">Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {books.map((book, idx) => (
-                        <tr key={book.id || idx}>
-                            <td className="py-2 px-4 border-b">{book.name}</td>
-                            <td className="py-2 px-4 border-b">{book.author}</td>
-                            <td className="py-2 px-4 border-b">{book.year}</td>
-                            <td className="py-2 px-4 border-b">{book.condition}</td>
-                            <td className="py-2 px-4 border-b">{book.price}</td>
-                            <td className="py-2 px-4 border-b">{book.contact}</td>
-                            <td className="py-2 px-4 border-b">{book.userName}</td>
-                            <td className="py-2 px-4 border-b">{book.listedDate ? new Date(book.listedDate).toLocaleDateString() : ''}</td>
-                            <td className="py-2 px-4 border-b">{book.status}</td>
-                            <td className="py-2 px-4 border-b">
-                                {book.userId === currentUser?.uid && (
-                                    <select
-                                        value={book.status}
-                                        onChange={e => handleUpdateStatus(book.id, e.target.value)}
-                                        className="px-2 py-1 border rounded"
-                                    >
-                                        <option value="available">Available</option>
-                                        <option value="sold">Sold</option>
-                                    </select>
-                                )}
-                            </td>
-                        </tr>
-                    ))}
-                </tbody>
-            </table>
+
+            {/* Book Listings Section */}
+            <div className="mb-8">
+                <h2 className="text-lg font-semibold text-gray-900 mb-4">Listed Books</h2>
+                {loading ? (
+                    <div className="flex justify-center items-center py-12">
+                        <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-indigo-600 mr-4"></div>
+                        <span className="text-lg text-gray-600">Loading books...</span>
+                    </div>
+                ) : (
+                    <div className="grid md:grid-cols-2 gap-4">
+                        {books.length === 0 ? (
+                            <div className="col-span-full text-center text-gray-500 py-12 text-lg">No books listed yet.</div>
+                        ) : (
+                            books.map((book, idx) => (
+                                <div key={book.id || idx} className="bg-white rounded-xl shadow p-4 flex flex-col gap-2 border border-gray-100 hover:shadow-lg transition">
+                                    <div className="flex justify-between items-center mb-2">
+                                        <span className="text-lg font-bold text-indigo-700">{book.name}</span>
+                                        <span className="text-xs px-2 py-1 rounded bg-indigo-50 text-indigo-600 font-semibold">{book.condition}</span>
+                                    </div>
+                                    <div className="text-sm text-gray-600 mb-1">by {book.author} ({book.year})</div>
+                                    <div className="flex flex-wrap gap-2 text-sm">
+                                        <span className="bg-green-50 text-green-700 px-2 py-1 rounded">${book.price}</span>
+                                        <span className="bg-gray-50 text-gray-700 px-2 py-1 rounded">Contact: {book.contact}</span>
+                                    </div>
+                                    <div className="text-xs text-gray-500 mt-2">Listed by <span className="font-semibold">{book.userName}</span> on {book.listedDate ? new Date(book.listedDate).toLocaleDateString() : ''}</div>
+                                    <div className="flex items-center gap-2 mt-2">
+                                        <span className={`text-xs font-semibold px-2 py-1 rounded ${book.status === 'available' ? 'bg-blue-100 text-blue-700' : 'bg-gray-200 text-gray-600'}`}>{book.status}</span>
+                                        {book.userId === currentUser?.uid && (
+                                            <select
+                                                value={book.status}
+                                                onChange={e => handleUpdateStatus(book.id, e.target.value)}
+                                                className="px-2 py-1 border rounded text-xs"
+                                            >
+                                                <option value="available">Available</option>
+                                                <option value="sold">Sold</option>
+                                            </select>
+                                        )}
+                                    </div>
+                                </div>
+                            ))
+                        )}
+                    </div>
+                )}
+            </div>
+
+
         </div>
     )
 }
