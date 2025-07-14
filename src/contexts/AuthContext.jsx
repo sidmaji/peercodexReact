@@ -98,21 +98,19 @@ export const AuthProvider = ({ children }) => {
                 console.log('Current user email verified status:', currentUser.emailVerified) // Debug log
 
                 if (currentUser.emailVerified) {
-                    // If userProfile exists and emailVerified is false, update it
-                    if (userProfile && !userProfile.emailVerified) {
-                        await setDoc(
-                            doc(db, 'users', currentUser.uid),
-                            {
-                                ...userProfile,
-                                emailVerified: true,
-                                lastModified: new Date().toISOString(),
-                            },
-                            { merge: true }
-                        )
+                    // Always update Firestore profile with emailVerified: true, regardless of userProfile value
+                    await setDoc(
+                        doc(db, 'users', currentUser.uid),
+                        {
+                            ...userProfile,
+                            emailVerified: true,
+                            lastModified: new Date().toISOString(),
+                        },
+                        { merge: true }
+                    )
 
-                        // Refresh user profile
-                        await fetchUserProfile(currentUser.uid)
-                    }
+                    // Refresh user profile
+                    await fetchUserProfile(currentUser.uid)
 
                     toast.success('Email verified successfully!')
                     return true
@@ -185,6 +183,7 @@ export const AuthProvider = ({ children }) => {
         logout,
         resendVerification,
         checkEmailVerification,
+        fetchUserProfile, // <-- add this line
     }
 
     return <AuthContext.Provider value={value}>{!loading && children}</AuthContext.Provider>

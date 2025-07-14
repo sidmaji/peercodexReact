@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { toast } from 'react-hot-toast'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../hooks/useAuth'
@@ -6,8 +6,15 @@ import { useAuth } from '../hooks/useAuth'
 const VerifyEmailPage = () => {
     const [checking, setChecking] = useState(false)
     const [resending, setResending] = useState(false)
-    const { resendVerification, checkEmailVerification, currentUser } = useAuth()
+    const [shouldRedirect, setShouldRedirect] = useState(false)
+    const { resendVerification, checkEmailVerification, currentUser, fetchUserProfile, userProfile } = useAuth()
     const navigate = useNavigate()
+
+    useEffect(() => {
+        if (shouldRedirect && userProfile?.emailVerified) {
+            navigate('/')
+        }
+    }, [shouldRedirect, userProfile, navigate])
 
     const handleCheckVerification = async () => {
         setChecking(true)
@@ -17,8 +24,19 @@ const VerifyEmailPage = () => {
             console.log('Verification result:', isVerified) // Debug log
 
             if (isVerified) {
-                // Navigate to root path to let AuthenticatedRedirect handle proper routing
-                navigate('/')
+                if (currentUser && fetchUserProfile) {
+                    await currentUser.reload()
+                    // Ensure Firestore profile is updated with emailVerified: true
+                    // This triggers AuthContext's checkEmailVerification logic, but we double-check here for safety
+                    if (!currentUser.emailVerified) {
+                        toast.error('Email not yet verified. Please check your email and click the verification link.')
+                        setChecking(false)
+                        return
+                    }
+                    // Always fetch the latest userProfile after reload
+                    await fetchUserProfile(currentUser.uid)
+                    setShouldRedirect(true)
+                }
             } else {
                 // Check if email is actually verified but function returned false
                 if (currentUser) {
@@ -26,7 +44,7 @@ const VerifyEmailPage = () => {
                     console.log('Current user email verified:', currentUser.emailVerified) // Debug log
                     if (currentUser.emailVerified) {
                         // Email is verified, navigate anyway
-                        navigate('/')
+                        setShouldRedirect(true)
                     } else {
                         toast.error('Email not yet verified. Please check your email and click the verification link.')
                     }
