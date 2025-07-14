@@ -56,30 +56,40 @@ const LoginModal = ({ isOpen, onClose, onSwitchToSignup }) => {
     return (
         <Modal isOpen={isOpen} onClose={handleClose} title="Sign In">
             <form onSubmit={handleSubmit} className="space-y-4">
-                <input
-                    id="email"
-                    name="email"
-                    type="email"
-                    autoComplete="email"
-                    required
-                    value={formData.email}
-                    onChange={handleChange}
-                    className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 ${emailError ? 'border-red-500' : 'border-gray-300'}`}
-                    placeholder="first.last.xyz@k12.friscoisd.org"
-                />
-                {emailError && <p className="text-red-600 text-xs mt-1">{emailError}</p>}
+                <div>
+                    <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+                        Email (first.last.xyz@k12.friscoisd.org)
+                    </label>
+                    <input
+                        id="email"
+                        name="email"
+                        type="email"
+                        autoComplete="email"
+                        required
+                        value={formData.email}
+                        onChange={handleChange}
+                        className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 ${emailError ? 'border-red-500' : 'border-gray-300'}`}
+                        placeholder="first.last.xyz@k12.friscoisd.org"
+                    />
+                    {emailError && <p className="text-red-600 text-xs mt-1">{emailError}</p>}
+                </div>
 
-                <input
-                    id="password"
-                    name="password"
-                    type="password"
-                    autoComplete="current-password"
-                    required
-                    value={formData.password}
-                    onChange={handleChange}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-                    placeholder="Password"
-                />
+                <div>
+                    <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
+                        Password
+                    </label>
+                    <input
+                        id="password"
+                        name="password"
+                        type="password"
+                        autoComplete="current-password"
+                        required
+                        value={formData.password}
+                        onChange={handleChange}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                        placeholder="Password"
+                    />
+                </div>
 
                 <div className="flex items-center justify-between">
                     <div className="text-sm">
