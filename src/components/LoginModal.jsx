@@ -93,9 +93,13 @@ const LoginModal = ({ isOpen, onClose, onSwitchToSignup }) => {
 
                 <div className="flex items-center justify-between">
                     <div className="text-sm">
-                        <a href="#" className="font-medium text-indigo-600 hover:text-indigo-500">
+                        <button
+                            type="button"
+                            className="font-medium text-indigo-600 hover:text-indigo-500 bg-transparent p-0 m-0 border-none cursor-pointer"
+                            onClick={() => navigate('/reset-password')}
+                        >
                             Forgot your password?
-                        </a>
+                        </button>
                     </div>
                 </div>
 
