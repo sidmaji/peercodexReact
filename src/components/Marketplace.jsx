@@ -5,6 +5,10 @@ import { useAuth } from '../hooks/useAuth'
 import { toast } from 'react-hot-toast'
 
 const Marketplace = () => {
+    // Pagination and search state
+    const [searchTerm, setSearchTerm] = useState('')
+    const [page, setPage] = useState(1)
+    const pageSize = 4
     const { currentUser, userProfile } = useAuth()
     const [books, setBooks] = useState([])
     const [showForm, setShowForm] = useState(false)
@@ -233,50 +237,106 @@ const Marketplace = () => {
 
             {/* Book Listings Section */}
             <div className="mb-8">
-                <h2 className="text-lg font-semibold text-gray-900 mb-4">Listed Books</h2>
+                {/* Global Search */}
+                <div className="mb-4 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                    <div>
+                        <input
+                            type="text"
+                            value={searchTerm}
+                            onChange={e => { setSearchTerm(e.target.value); setPage(1); }}
+                            placeholder="Search books by name, author, year, contact, user..."
+                            className="w-full md:w-96 px-3 py-2 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500"
+                        />
+                    </div>
+                    <div className="text-sm text-gray-600 font-medium">
+                        Total Books: <span className="font-bold text-indigo-700">{books.length}</span>
+                    </div>
+                </div>
+
                 {loading ? (
                     <div className="flex justify-center items-center py-12">
                         <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-indigo-600 mr-4"></div>
                         <span className="text-lg text-gray-600">Loading books...</span>
                     </div>
                 ) : (
-                    <div className="grid md:grid-cols-2 gap-4">
-                        {books.length === 0 ? (
-                            <div className="col-span-full text-center text-gray-500 py-12 text-lg">No books listed yet.</div>
-                        ) : (
-                            books.map((book, idx) => (
-                                <div key={book.id || idx} className="bg-white rounded-xl shadow p-4 flex flex-col gap-2 border border-gray-100 hover:shadow-lg transition">
-                                    <div className="flex justify-between items-center mb-2">
-                                        <span className="text-lg font-bold text-indigo-700">{book.name}</span>
-                                        <span className="text-xs px-2 py-1 rounded bg-indigo-50 text-indigo-600 font-semibold">{book.condition}</span>
-                                    </div>
-                                    <div className="text-sm text-gray-600 mb-1">by {book.author} ({book.year})</div>
-                                    <div className="flex flex-wrap gap-2 text-sm">
-                                        <span className="bg-green-50 text-green-700 px-2 py-1 rounded">${book.price}</span>
-                                        <span className="bg-gray-50 text-gray-700 px-2 py-1 rounded">Contact: {book.contact}</span>
-                                    </div>
-                                    <div className="text-xs text-gray-500 mt-2">Listed by <span className="font-semibold">{book.userName}</span> on {book.listedDate ? new Date(book.listedDate).toLocaleDateString() : ''}</div>
-                                    <div className="flex items-center gap-2 mt-2">
-                                        <span className={`text-xs font-semibold px-2 py-1 rounded ${book.status === 'available' ? 'bg-blue-100 text-blue-700' : 'bg-gray-200 text-gray-600'}`}>{book.status}</span>
-                                        {book.userId === currentUser?.uid && (
-                                            <select
-                                                value={book.status}
-                                                onChange={e => handleUpdateStatus(book.id, e.target.value)}
-                                                className="px-2 py-1 border rounded text-xs"
-                                            >
-                                                <option value="available">Available</option>
-                                                <option value="sold">Sold</option>
-                                            </select>
-                                        )}
-                                    </div>
+                    (() => {
+                        // Filter books by global search
+                        const filtered = books.filter(book => {
+                            const term = searchTerm.trim().toLowerCase()
+                            if (!term) return true
+                            return (
+                                (book.name && book.name.toLowerCase().includes(term)) ||
+                                (book.author && book.author.toLowerCase().includes(term)) ||
+                                (book.year && String(book.year).includes(term)) ||
+                                (book.contact && book.contact.toLowerCase().includes(term)) ||
+                                (book.userName && book.userName.toLowerCase().includes(term)) ||
+                                (book.userEmail && book.userEmail.toLowerCase().includes(term))
+                            )
+                        })
+                        const totalPages = Math.ceil(filtered.length / pageSize)
+                        const paginated = filtered.slice((page - 1) * pageSize, page * pageSize)
+                        return (
+                            <>
+                                <div className="grid md:grid-cols-2 gap-4">
+                                    {filtered.length === 0 ? (
+                                        <div className="col-span-full text-center text-gray-500 py-12 text-lg">No books listed yet.</div>
+                                    ) : (
+                                        paginated.map((book, idx) => (
+                                            <div key={book.id || idx} className="bg-white rounded-xl shadow p-4 flex flex-col gap-2 border border-gray-100 hover:shadow-lg transition">
+                                                <div className="flex justify-between items-center mb-2">
+                                                    <span className="text-lg font-bold text-indigo-700">{book.name}</span>
+                                                    <span className="text-xs px-2 py-1 rounded bg-indigo-50 text-indigo-600 font-semibold">{book.condition}</span>
+                                                </div>
+                                                <div className="text-sm text-gray-600 mb-1">by {book.author} ({book.year})</div>
+                                                <div className="flex flex-wrap gap-2 text-sm">
+                                                    <span className="bg-green-50 text-green-700 px-2 py-1 rounded">${book.price}</span>
+                                                    <span className="bg-gray-50 text-gray-700 px-2 py-1 rounded">Contact: {book.contact}</span>
+                                                </div>
+                                                <div className="text-xs text-gray-500 mt-2">Listed by <span className="font-semibold">{book.userName}</span> on {book.listedDate ? new Date(book.listedDate).toLocaleDateString() : ''}</div>
+                                                <div className="flex items-center gap-2 mt-2">
+                                                    <span className={`text-xs font-semibold px-2 py-1 rounded ${book.status === 'available' ? 'bg-blue-100 text-blue-700' : 'bg-gray-200 text-gray-600'}`}>{book.status}</span>
+                                                    {book.userId === currentUser?.uid && (
+                                                        <select
+                                                            value={book.status}
+                                                            onChange={e => handleUpdateStatus(book.id, e.target.value)}
+                                                            className="px-2 py-1 border rounded text-xs"
+                                                        >
+                                                            <option value="available">Available</option>
+                                                            <option value="sold">Sold</option>
+                                                        </select>
+                                                    )}
+                                                </div>
+                                            </div>
+                                        ))
+                                    )}
                                 </div>
-                            ))
-                        )}
-                    </div>
+                                {/* Pagination */}
+                                {totalPages > 1 && (
+                                    <div className="flex justify-center items-center gap-2 mt-6">
+                                        <button
+                                            className="px-3 py-1 rounded bg-gray-200 text-gray-700 font-medium disabled:opacity-50"
+                                            onClick={() => setPage(page - 1)}
+                                            disabled={page === 1}
+                                        >
+                                            Prev
+                                        </button>
+                                        <span className="text-sm font-medium text-gray-700">
+                                            Page {page} of {totalPages}
+                                        </span>
+                                        <button
+                                            className="px-3 py-1 rounded bg-gray-200 text-gray-700 font-medium disabled:opacity-50"
+                                            onClick={() => setPage(page + 1)}
+                                            disabled={page === totalPages}
+                                        >
+                                            Next
+                                        </button>
+                                    </div>
+                                )}
+                            </>
+                        )
+                    })()
                 )}
             </div>
-
-
         </div>
     )
 }
