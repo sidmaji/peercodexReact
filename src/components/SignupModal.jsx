@@ -152,7 +152,11 @@ const SignupModal = ({ isOpen, onClose, onSwitchToLogin }) => {
 
                 {/* Date of Birth */}
                 <div className="relative">
+                    <label htmlFor="dateOfBirth" className="block text-sm font-medium text-gray-700 mb-1">
+                        Date of Birth
+                    </label>
                     <input
+                        id="dateOfBirth"
                         name="dateOfBirth"
                         type="date"
                         value={formData.dateOfBirth}
@@ -161,7 +165,6 @@ const SignupModal = ({ isOpen, onClose, onSwitchToLogin }) => {
                         max={new Date(new Date().setFullYear(new Date().getFullYear() - 13)).toISOString().split('T')[0]}
                         min={new Date(new Date().setFullYear(new Date().getFullYear() - 22)).toISOString().split('T')[0]}
                         className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-                        placeholder="Date of birth"
                     />
                 </div>
 
