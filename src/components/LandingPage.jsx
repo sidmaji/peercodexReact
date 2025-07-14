@@ -85,7 +85,7 @@ const LandingPage = () => {
             </nav>
 
             {/* Hero Section - Full Screen */}
-            <div className="min-h-[60vh] flex items-center justify-center pt-8 pb-8">
+            <div className="min-h-[60vh] flex items-center justify-center pt-20 pb-8">
                 <div className="w-full text-center animate-fade-in">
                     <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-4 leading-tight">
                         Connect. Learn. <span className="text-indigo-600 bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text">Grow.</span>
