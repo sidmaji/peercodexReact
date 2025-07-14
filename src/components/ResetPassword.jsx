@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { auth } from '../firebase';
 import { sendPasswordResetEmail } from 'firebase/auth';
 
-const ResetPassword = () => {
+const ResetPassword = ({ onClose }) => {
     const [email, setEmail] = useState('');
     const [submitted, setSubmitted] = useState(false);
     const [error, setError] = useState('');
@@ -22,16 +22,15 @@ const ResetPassword = () => {
         }
     };
 
-    // Accept onClose prop for modal closing
-    // If not provided, fallback to window.history.back
+    // Close modal and return to LoginModal
     const handleClose = () => {
-        if (typeof window !== 'undefined' && window.history) {
-            window.history.back();
+        if (typeof onClose === 'function') {
+            onClose();
         }
     };
 
     return (
-        <div className="fixed inset-0 bg-black/10 flex items-center justify-center z-50">
+        <div className="fixed inset-0 bg-black/100 flex items-center justify-center z-50">
             <div className="bg-white rounded-xl shadow-lg p-8 w-full max-w-md relative">
                 {/* Close button */}
                 <button
@@ -51,7 +50,7 @@ const ResetPassword = () => {
                 <form onSubmit={handleSubmit} className="space-y-4">
                     <div>
                         <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
-                            Email Address
+                            Email 
                         </label>
                         <input
                             id="email"
