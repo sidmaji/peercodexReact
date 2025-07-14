@@ -49,8 +49,15 @@ const Profile = ({ standalone = true }) => {
             [name]: value,
         }))
 
-        // Clear error when user starts typing
-        if (errors[name]) {
+        // Live phone validation (must be exactly 10 digits)
+        if (name === 'phoneNumber') {
+            const digits = value.replace(/\D/g, '')
+            if (value && digits.length !== 10) {
+                setErrors((prev) => ({ ...prev, phoneNumber: 'Please enter a valid 10-digit phone number.' }))
+            } else {
+                setErrors((prev) => ({ ...prev, phoneNumber: '' }))
+            }
+        } else if (errors[name]) {
             setErrors((prev) => ({
                 ...prev,
                 [name]: '',
@@ -147,8 +154,11 @@ const Profile = ({ standalone = true }) => {
             newErrors.grade = 'Grade is required'
         }
 
-        if (editData.phoneNumber && !/^\+?[\d\s\-()]+$/.test(editData.phoneNumber)) {
-            newErrors.phoneNumber = 'Please enter a valid phone number'
+        if (editData.phoneNumber) {
+            const digits = editData.phoneNumber.replace(/\D/g, '')
+            if (digits.length !== 10) {
+                newErrors.phoneNumber = 'Please enter a valid 10-digit phone number.'
+            }
         }
 
         setErrors(newErrors)

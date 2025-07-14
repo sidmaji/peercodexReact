@@ -50,10 +50,10 @@ const Marketplace = () => {
             return
         }
 
-        // Phone validation (contact field)
-        const phoneRegex = /^\+?[\d\s\-()]{7,}$/
-        if (!form.contact.trim() || !phoneRegex.test(form.contact.trim())) {
-            setFormErrors({ contact: 'Please enter a valid phone number.' })
+        // Phone validation (contact field, must be exactly 10 digits)
+        const digits = form.contact.replace(/\D/g, '')
+        if (!form.contact.trim() || digits.length !== 10) {
+            setFormErrors({ contact: 'Please enter a valid 10-digit phone number.' })
             return
         }
         setFormErrors({})
