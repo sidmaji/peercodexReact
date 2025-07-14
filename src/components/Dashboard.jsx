@@ -5,6 +5,7 @@ import { toast } from 'react-hot-toast'
 import { db } from '../firebase'
 import { useAuth } from '../hooks/useAuth'
 import FindMentor from './FindMentor'
+import Marketplace from './Marketplace'
 import Profile from './Profile'
 import RequestsReceived from './RequestsReceived'
 import RequestsSent from './RequestsSent'
@@ -74,6 +75,7 @@ const Dashboard = () => {
         { id: 'find-mentor', label: 'Find Mentor', icon: <AcademicCapIcon className="w-6 h-6" />, available: true },
         { id: 'mentor-requests', label: 'Requests Received', icon: <InboxIcon className="w-6 h-6" />, available: true },
         { id: 'requests-sent', label: 'Requests Sent', icon: <PaperAirplaneIcon className="w-6 h-6" />, available: true },
+        { id: 'marketplace', label: 'Marketplace', icon: <SparklesIcon className="w-6 h-6" />, available: true }, // <-- add this
     ]
 
     const renderContent = () => {
@@ -88,6 +90,8 @@ const Dashboard = () => {
                 return <RequestsReceived />
             case 'requests-sent':
                 return <RequestsSent />
+            case 'marketplace':
+                return <Marketplace /> // <-- add this
             default:
                 return <OverviewContent userProfile={userProfile} currentUser={currentUser} sentCounts={sentCounts} receivedCounts={receivedCounts} totalPointsReceived={totalPointsReceived} />
         }

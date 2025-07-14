@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom'
 import { ALLOWED_TEST_EMAILS } from '../constants'
 import { useAuth } from '../hooks/useAuth'
 import Modal from './Modal'
+import TermsOfService from './TermsOfService'
 
 // List of allowed test emails (case-insensitive)
 // const ALLOWED_TEST_EMAILS = new Set(['test1@gmail.com', 'test2@gmail.com', 'admin@peercodex.org', 'dev@peercodex.org'])
@@ -85,6 +86,7 @@ const SignupModal = ({ isOpen, onClose, onSwitchToLogin }) => {
         onClose()
     }
 
+    const [showTerms, setShowTerms] = useState(false);
     return (
         <Modal isOpen={isOpen} onClose={handleClose} title="Create Account">
             <form onSubmit={handleSubmit} className="space-y-4">
@@ -180,9 +182,13 @@ const SignupModal = ({ isOpen, onClose, onSwitchToLogin }) => {
                     />
                     <label htmlFor="termsAccepted" className="ml-2 block text-sm text-gray-900">
                         I accept the{' '}
-                        <a href="/terms" className="text-indigo-600 hover:text-indigo-500">
+                        <button
+                            type="button"
+                            className="text-indigo-600 hover:text-indigo-500 underline bg-transparent border-none p-0 m-0 cursor-pointer"
+                            onClick={() => setShowTerms(true)}
+                        >
                             Terms of Service
-                        </a>
+                        </button>
                     </label>
                 </div>
 
@@ -204,6 +210,8 @@ const SignupModal = ({ isOpen, onClose, onSwitchToLogin }) => {
                     </span>
                 </div>
             </form>
+            {/* Terms of Service Modal */}
+            <TermsOfService isOpen={showTerms} onClose={() => setShowTerms(false)} />
         </Modal>
     )
 }

@@ -28,12 +28,18 @@ service cloud.firestore {
     }
     
     match /users/{userId}/pointBalance/{docId} {
-  allow read, write: if request.auth != null && request.auth.uid == userId;
-}
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
 
-match /users/{userId}/points/{menteeId} {
-  allow read: if request.auth != null && (request.auth.uid == userId || request.auth.uid == menteeId);
-  allow write: if request.auth != null && request.auth.uid == menteeId;
-}
+    match /marketplace/{bookId} {
+      allow read: if request.auth != null;
+      allow create: if request.auth != null;
+      allow update, delete: if request.auth != null && request.auth.uid == resource.data.userId;
+    }
+
+    match /users/{userId}/points/{menteeId} {
+      allow read: if request.auth != null && (request.auth.uid == userId || request.auth.uid == menteeId);
+      allow write: if request.auth != null && request.auth.uid == menteeId;
+    }
   }
 }

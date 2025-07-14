@@ -2,7 +2,7 @@ import { useState } from 'react'
 import LoginModal from './LoginModal'
 import SignupModal from './SignupModal'
 
-const LandingPage = () => {
+const LandingPage = ({ openTerms }) => {
     const [isMenuOpen, setIsMenuOpen] = useState(false)
     const [isLoginModalOpen, setIsLoginModalOpen] = useState(false)
     const [isSignupModalOpen, setIsSignupModalOpen] = useState(false)
@@ -197,9 +197,16 @@ const LandingPage = () => {
                             <a href="/privacy" className="text-base lg:text-lg text-gray-400 hover:text-white transition-colors">
                                 Privacy
                             </a>
-                            <a href="/terms" className="text-base lg:text-lg text-gray-400 hover:text-white transition-colors">
+                            <button
+                                type="button"
+                                onClick={e => {
+                                    e.preventDefault();
+                                    openTerms();
+                                }}
+                                className="text-base lg:text-lg text-gray-400 hover:text-white transition-colors bg-transparent border-none cursor-pointer"
+                            >
                                 Terms
-                            </a>
+                            </button>
                             <a href="/contact" className="text-base lg:text-lg text-gray-400 hover:text-white transition-colors">
                                 Contact
                             </a>

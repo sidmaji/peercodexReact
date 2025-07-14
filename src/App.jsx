@@ -1,6 +1,9 @@
 import { Toaster } from 'react-hot-toast'
 import { Navigate, Route, BrowserRouter as Router, Routes } from 'react-router-dom'
 import Dashboard from './components/Dashboard'
+import TermsOfService from './components/TermsOfService'
+import { useState } from 'react'
+import ResetPassword from './components/ResetPassword'
 import LandingPage from './components/LandingPage'
 import OnboardingFlow from './components/OnboardingFlow'
 import Profile from './components/Profile'
@@ -9,6 +12,7 @@ import VerifyEmailPage from './components/VerifyEmailPage'
 import ThemeProvider from './context/ThemeContext.jsx'
 import { AuthProvider } from './contexts/AuthContext.jsx'
 import { useAuth } from './hooks/useAuth'
+import Marketplace from './components/Marketplace'
 
 // Component to handle authenticated user redirects
 const AuthenticatedRedirect = ({ children }) => {
@@ -37,6 +41,10 @@ const AuthenticatedRedirect = ({ children }) => {
 }
 
 function App() {
+    const [isTermsOpen, setIsTermsOpen] = useState(false);
+    const openTerms = () => setIsTermsOpen(true);
+    const closeTerms = () => setIsTermsOpen(false);
+
     return (
         <Router>
             <AuthProvider>
@@ -47,10 +55,13 @@ function App() {
                             path="/"
                             element={
                                 <AuthenticatedRedirect>
-                                    <LandingPage />
+                                    <LandingPage openTerms={openTerms} />
                                 </AuthenticatedRedirect>
                             }
                         />
+
+                        {/* Password reset route */}
+                        <Route path="/reset-password" element={<ResetPassword />} />
 
                         {/* Email verification route */}
                         <Route path="/verify-email" element={<VerifyEmailPage />} />
@@ -84,6 +95,8 @@ function App() {
                             }
                         />
 
+                        <Route path="/marketplace" element={<Marketplace />} />
+
                         {/* Fallback route */}
                         <Route path="*" element={<Navigate to="/" replace />} />
                     </Routes>
@@ -107,6 +120,8 @@ function App() {
                         },
                     }}
                 />
+                {/* Terms of Service Modal */}
+                <TermsOfService isOpen={isTermsOpen} onClose={closeTerms} />
             </AuthProvider>
         </Router>
     )

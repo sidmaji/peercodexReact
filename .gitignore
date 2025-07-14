@@ -12,7 +12,7 @@ dist
 dist-ssr
 *.local
 .firebase
-
+*.cache*
 # Ignore the firebase configuration file
 firebase.js
 
