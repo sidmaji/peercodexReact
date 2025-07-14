@@ -89,33 +89,47 @@ const SignupModal = ({ isOpen, onClose, onSwitchToLogin }) => {
     const [showTerms, setShowTerms] = useState(false);
     return (
         <Modal isOpen={isOpen} onClose={handleClose} title="Create Account">
+
             <form onSubmit={handleSubmit} className="space-y-4">
                 {/* Name Fields */}
                 <div className="grid grid-cols-2 gap-3">
-                    <input
-                        id="firstName"
-                        name="firstName"
-                        type="text"
-                        required
-                        value={formData.firstName}
-                        onChange={handleChange}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-                        placeholder="First name"
-                    />
-                    <input
-                        id="lastName"
-                        name="lastName"
-                        type="text"
-                        required
-                        value={formData.lastName}
-                        onChange={handleChange}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-                        placeholder="Last name"
-                    />
+                    <div>
+                        <label htmlFor="firstName" className="block text-sm font-medium text-gray-700 mb-1">
+                            First Name <span className="text-red-600">*</span>
+                        </label>
+                        <input
+                            id="firstName"
+                            name="firstName"
+                            type="text"
+                            required
+                            value={formData.firstName}
+                            onChange={handleChange}
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                            placeholder="First name"
+                        />
+                    </div>
+                    <div>
+                        <label htmlFor="lastName" className="block text-sm font-medium text-gray-700 mb-1">
+                            Last Name <span className="text-red-600">*</span>
+                        </label>
+                        <input
+                            id="lastName"
+                            name="lastName"
+                            type="text"
+                            required
+                            value={formData.lastName}
+                            onChange={handleChange}
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                            placeholder="Last name"
+                        />
+                    </div>
                 </div>
 
                 {/* Email and Password Group */}
                 <div className="space-y-3">
+                    <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+                        School Email (first.last.xyz@k12.friscoisd.org) <span className="text-red-600">*</span>
+                    </label>
                     <input
                         id="email"
                         name="email"
@@ -128,6 +142,9 @@ const SignupModal = ({ isOpen, onClose, onSwitchToLogin }) => {
                         placeholder="first.last.xyz@k12.friscoisd.org"
                     />
                     {emailError && <p className="text-red-600 text-xs mt-1">{emailError}</p>}
+                    <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
+                        Password <span className="text-red-600">(Do not use the school email password)</span> <span className="text-red-600">*</span>
+                    </label>
                     <input
                         id="password"
                         name="password"
@@ -139,6 +156,9 @@ const SignupModal = ({ isOpen, onClose, onSwitchToLogin }) => {
                         className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
                         placeholder="Password"
                     />
+                    <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 mb-1">
+                        Confirm Password <span className="text-red-600">*</span>
+                    </label>
                     <input
                         id="confirmPassword"
                         name="confirmPassword"
@@ -155,7 +175,7 @@ const SignupModal = ({ isOpen, onClose, onSwitchToLogin }) => {
                 {/* Date of Birth */}
                 <div className="relative">
                     <label htmlFor="dateOfBirth" className="block text-sm font-medium text-gray-700 mb-1">
-                        Date of Birth
+                        Date of Birth <span className="text-red-600">*</span>
                     </label>
                     <input
                         id="dateOfBirth"
