@@ -1,11 +1,23 @@
 import { addDoc, collection, getDocs, query, where } from 'firebase/firestore'
 import { useState } from 'react'
-import { AP_SUBJECTS, SCHOOLS, GRADE_LEVELS } from '../constants'
+import { AP_SUBJECTS, SCHOOLS, GRADE_LEVELS, BAD_WORDS } from '../constants'
+import leoProfanity from 'leo-profanity';
 import { db } from '../firebase'
 import { useAuth } from '../hooks/useAuth'
 import Select from 'react-select'
 
 const FindMentor = ({ onSearch }) => {
+
+    function containsProfanity(text) {
+        const lower = text.toLowerCase();
+        // Check custom list
+        const custom = BAD_WORDS.some(word => lower.includes(word));
+        // Check leo-profanity
+        leoProfanity.loadDictionary('en');
+        leoProfanity.add(BAD_WORDS); // Add custom bad words to leo-pro
+        const leo = leoProfanity.check(text);
+        return custom || leo;
+    }
     const [criteria, setCriteria] = useState({
         school: '',
         subjects: [],
@@ -222,41 +234,61 @@ const FindMentor = ({ onSearch }) => {
                                 </svg>
                             </button>
                             <h3 className="text-xl font-bold text-indigo-700 mb-2">Connect with {modalMentor.name}</h3>
-                            <p className="text-sm text-gray-600 mb-4">Send a brief request (max 100 words) to introduce yourself and explain why you'd like to connect.</p>
+                            <p className="text-sm text-gray-600 mb-4">Send a brief request to introduce yourself and explain why you'd like to connect. Make it compelling. </p>
                             <textarea
                                 className="w-full border border-gray-300 rounded-lg p-3 mb-4 focus:ring-indigo-500 focus:border-indigo-500 text-sm"
                                 rows={4}
-                                maxLength={600}
+                                maxLength={280}
                                 value={requestMsg}
-                                onChange={(e) => setRequestMsg(e.target.value)}
-                                placeholder="Write your request here (max 100 words)..."
+                                onChange={(e) => {
+                                    if (e.target.value.length <= 280) setRequestMsg(e.target.value)
+                                }}
+                                placeholder="Write your request here (max 280 characters)..."
                             />
                             <div className="flex justify-end">
                                 <button
                                     className="px-6 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors font-medium"
-                                    disabled={sending || requestMsg.trim().split(/\s+/).length > 100 || requestMsg.trim().length === 0}
+                                    disabled={sending || requestMsg.trim().length === 0 || requestMsg.length > 280}
                                     onClick={async () => {
-                                        setSending(true)
+                                        if (containsProfanity(requestMsg)) {
+                                            setToastMsg('Your message contains inappropriate language. Please revise and try again.');
+                                            return;
+                                        }
+                                        setSending(true);
                                         try {
+                                            // Check for existing request to this mentor
+                                            const reqQuery = query(
+                                                collection(db, 'requests'),
+                                                where('requesteeui', '==', modalMentor.uid),
+                                                where('requestedui', '==', currentUser?.uid || ''),
+                                                where('status', 'in', ['pending', 'accepted'])
+                                            );
+                                            const reqSnap = await getDocs(reqQuery);
+                                            if (!reqSnap.empty) {
+                                                setToastMsg('You already have a pending or accepted request with this mentor.');
+                                                setSending(false);
+                                                return;
+                                            }
                                             await addDoc(collection(db, 'requests'), {
                                                 requesteeui: modalMentor.uid,
                                                 requestedui: currentUser?.uid || '',
                                                 message: requestMsg.trim(),
                                                 time: new Date().toISOString(),
                                                 status: 'pending',
-                                            })
-                                            setShowModal(false)
-                                            setToastMsg('Request sent successfully!')
-                                        } catch {
-                                            setToastMsg('Failed to send request.')
+                                            });
+                                            setShowModal(false);
+                                            setToastMsg('Request sent successfully!');
+                                        } catch (err) {
+                                            setToastMsg('Failed to send request.');
                                         }
-                                        setSending(false)
+                                        setSending(false);
                                     }}
                                 >
                                     {sending ? 'Sending...' : 'Send Request'}
                                 </button>
                             </div>
-                            <div className="text-xs text-gray-500 mt-2">{requestMsg.trim().split(/\s+/).length} / 100 words</div>
+                            
+                            <div className="text-xs text-gray-500 mt-2">{requestMsg.length} / 280 characters</div>
                         </div>
                     </div>
                 )}

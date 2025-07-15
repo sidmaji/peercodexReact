@@ -1,11 +1,19 @@
 import { useState } from 'react'
 import LoginModal from './LoginModal'
 import SignupModal from './SignupModal'
+import ContactModal from './ContactModal'
+import PrivacyPolicy from './PrivacyPolicy'
+import AboutModal from './AboutModal'
+import CareerModal from './CareerModal'
 
 const LandingPage = ({ openTerms }) => {
     const [isMenuOpen, setIsMenuOpen] = useState(false)
     const [isLoginModalOpen, setIsLoginModalOpen] = useState(false)
     const [isSignupModalOpen, setIsSignupModalOpen] = useState(false)
+    const [isContactModalOpen, setIsContactModalOpen] = useState(false)
+    const [isPrivacyModalOpen, setIsPrivacyModalOpen] = useState(false)
+    const [isAboutModalOpen, setIsAboutModalOpen] = useState(false)
+    const [isCareerModalOpen, setIsCareerModalOpen] = useState(false)
 
     const openLoginModal = () => {
         setIsLoginModalOpen(true)
@@ -22,6 +30,7 @@ const LandingPage = ({ openTerms }) => {
     const closeModals = () => {
         setIsLoginModalOpen(false)
         setIsSignupModalOpen(false)
+        setIsContactModalOpen(false)
     }
 
     return (
@@ -114,6 +123,32 @@ const LandingPage = ({ openTerms }) => {
                 </div>
             </div>
 
+            {/* Marketplace Hero Section - Used Books */}
+            <div className="min-h-[40vh] flex items-center justify-center bg-gradient-to-br from-yellow-50 to-orange-100 py-12">
+                <div className="w-full text-center animate-fade-in">
+                    <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-4 leading-tight">
+                        Marketplace for Used Books
+                    </h2>
+                    <p className="text-base sm:text-lg md:text-xl lg:text-2xl text-gray-700 mb-4 leading-relaxed px-2 max-w-2xl mx-auto">
+                        Buy, sell, or exchange used textbooks and study materials with fellow students. Save money, reduce waste, and help others succeed by sharing your resources.
+                    </p>
+                    <div className="flex flex-col sm:flex-row gap-2 justify-center px-2 mt-4">
+                        <button
+                            onClick={openSignupModal}
+                            className="bg-orange-500 text-white hover:bg-orange-600 px-6 py-2 rounded-lg text-base font-medium transition-all duration-200 ease-in-out transform hover:scale-105 shadow-md hover:shadow-lg"
+                        >
+                            List a Book
+                        </button>
+                        <button
+                            onClick={openSignupModal}
+                            className="bg-white text-orange-600 hover:bg-gray-50 border-2 border-orange-500 px-6 py-2 rounded-lg text-base font-medium transition-all duration-200 ease-in-out transform hover:scale-105 shadow-md hover:shadow-lg backdrop-blur-sm"
+                        >
+                            Browse Marketplace
+                        </button>
+                    </div>
+                </div>
+            </div>
+
             {/* Features Section */}
             <div className="min-h-[40vh] flex items-center justify-center bg-white">
                 <div className="w-full py-10">
@@ -129,7 +164,7 @@ const LandingPage = ({ openTerms }) => {
                             </div>
                             <h3 className="text-xl md:text-2xl lg:text-3xl font-semibold text-gray-900 mb-3">Create Your Profile</h3>
                             <p className="text-sm md:text-base lg:text-lg text-gray-600 leading-relaxed">
-                                Sign up with your email and create a profile showcasing your academic strengths and the subjects you excel in.
+                                Sign up with your student email and create a profile highlighting the subjects you can mentor others in.
                             </p>
                         </div>
 
@@ -141,7 +176,7 @@ const LandingPage = ({ openTerms }) => {
                             </div>
                             <h3 className="text-xl md:text-2xl lg:text-3xl font-semibold text-gray-900 mb-3">Find Your Match</h3>
                             <p className="text-sm md:text-base lg:text-lg text-gray-600 leading-relaxed">
-                                Connect with peers who complement your academic skills - find a mentor to guide you or mentees to help in any subject.
+                                Search for the perfect mentor, send a compelling request explaining your goals, and get accepted.
                             </p>
                         </div>
 
@@ -153,7 +188,7 @@ const LandingPage = ({ openTerms }) => {
                             </div>
                             <h3 className="text-xl md:text-2xl lg:text-3xl font-semibold text-gray-900 mb-3">Start Learning</h3>
                             <p className="text-sm md:text-base lg:text-lg text-gray-600 leading-relaxed">
-                                Begin your tutoring journey with one-on-one study sessions, homework help, and collaborative learning across all subjects.
+                                Make connections with your mentor, learn together, and award points to recognize their support and guidance.
                             </p>
                         </div>
                     </div>
@@ -189,13 +224,29 @@ const LandingPage = ({ openTerms }) => {
                 <div className="w-full px-4 lg:px-8 xl:px-16 2xl:px-24">
                     <div className="text-center">
                         <h3 className="text-2xl md:text-3xl lg:text-4xl font-bold mb-4">PeerCodex</h3>
-                        <p className="text-lg lg:text-xl text-gray-400 mb-8 max-w-4xl mx-auto">Empowering high school students through peer-to-peer academic mentorship and tutoring.</p>
+                        <p className="text-lg lg:text-xl text-gray-400 mb-8 max-w-4xl mx-auto">Empowering high school students through peer-to-peer academic mentorship.</p>
                         <div className="flex justify-center space-x-6 lg:space-x-8 mb-8">
                             <a href="/about" className="text-base lg:text-lg text-gray-400 hover:text-white transition-colors">
-                                About
+                                <span
+                                    className="cursor-pointer"
+                                    onClick={e => {
+                                        e.preventDefault();
+                                        setIsAboutModalOpen(true);
+                                    }}
+                                >
+                                    About
+                                </span>
                             </a>
                             <a href="/privacy" className="text-base lg:text-lg text-gray-400 hover:text-white transition-colors">
-                                Privacy
+                                <span
+                                    className="cursor-pointer"
+                                    onClick={e => {
+                                        e.preventDefault();
+                                        setIsPrivacyModalOpen(true);
+                                    }}
+                                >
+                                    Privacy
+                                </span>
                             </a>
                             <button
                                 type="button"
@@ -208,7 +259,26 @@ const LandingPage = ({ openTerms }) => {
                                 Terms
                             </button>
                             <a href="/contact" className="text-base lg:text-lg text-gray-400 hover:text-white transition-colors">
-                                Contact
+                                <span
+                                    className="cursor-pointer"
+                                    onClick={e => {
+                                        e.preventDefault();
+                                        setIsContactModalOpen(true);
+                                    }}
+                                >
+                                    Contact
+                                </span>
+                            </a>
+                            <a href="/career" className="text-base lg:text-lg text-gray-400 hover:text-white transition-colors">
+                                <span
+                                    className="cursor-pointer"
+                                    onClick={e => {
+                                        e.preventDefault();
+                                        setIsCareerModalOpen(true);
+                                    }}
+                                >
+                                    Career Opportunities
+                                </span>
                             </a>
                         </div>
                         <div className="pt-6 border-t border-gray-800 text-gray-400">
@@ -223,6 +293,18 @@ const LandingPage = ({ openTerms }) => {
 
             {/* Signup Modal */}
             <SignupModal isOpen={isSignupModalOpen} onClose={closeModals} onSwitchToLogin={openLoginModal} />
+
+            {/* Contact Modal */}
+            <ContactModal isOpen={isContactModalOpen} onClose={() => setIsContactModalOpen(false)} />
+
+            {/* Privacy Policy Modal */}
+            <PrivacyPolicy isOpen={isPrivacyModalOpen} onClose={() => setIsPrivacyModalOpen(false)} />
+
+            {/* About Modal */}
+            <AboutModal isOpen={isAboutModalOpen} onClose={() => setIsAboutModalOpen(false)} />
+
+            {/* Career Opportunities Modal */}
+            <CareerModal isOpen={isCareerModalOpen} onClose={() => setIsCareerModalOpen(false)} />
         </div>
     )
 }

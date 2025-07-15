@@ -1,3 +1,8 @@
+// Profanity and slur filter list for message validation
+export const BAD_WORDS = [
+    'fuck', 'shit', 'bitch', 'arse', 'asshole', 'ass',
+    'asshole',  'bastard', 'bitch', 'b00b','bollocks', 'bugger', 'bullshit', 'crap', 'damn', 'frigger', 'nigga', 'bastard', 'dick', 'cunt', 'nigger', 'nigga','fag', 'sex','slut', 'whore', 'retard', 'chink', 'spic', 'kike', 'gook', 'coon', 'dyke', 'tranny', 'twat', 'paki', 'wop', 'wetback', 'homo', 'queer', 'negro', 'cripple', 'spazz', 'gimp', 'mongoloid', 'gypsy', 'pimp', 'rapist', 'molest', 'pedo', 'pedophile', 'terrorist', 'isis', 'nazis', 'hitler', 'kkk', 'faggot', 'motherfucker', 'jackass', 'douche', 'douchebag', 'arsehole', 'bollocks', 'bugger', 'bloody', 'wanker', 'tosser', 'prick', 'slag', 'git', 'muppet', 'nonce', 'pillock', 'twit', 'twat', 'yid', 'zipperhead', 'abo', 'ape', 'beaner', 'camel jockey', 'golliwog', 'jap', 'jungle bunny', 'kaffir', 'oreo', 'porch monkey', 'raghead', 'redskin', 'sambo', 'sand nigger', 'shemale', 'towel head', 'tranny', 'wetback', 'zipperhead'
+];
 // Allowed test emails for signup bypass (case-insensitive)
 export const ALLOWED_TEST_EMAILS = new Set([
     'wfmgift1@gmail.com',
@@ -8,6 +13,7 @@ export const ALLOWED_TEST_EMAILS = new Set([
     'siddhant.maji@gmail.com',
     'arsh.maji@gmail.com',
     'arshia.gulati@gmail.com',
+    'ryan.maji19@gmail.com'
 ])
 // Academic subjects and constants for PeerCodex platform
 
