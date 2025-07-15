@@ -86,10 +86,9 @@ const SignupModal = ({ isOpen, onClose, onSwitchToLogin }) => {
         onClose()
     }
 
-    const [showTerms, setShowTerms] = useState(false);
+    const [showTerms, setShowTerms] = useState(false)
     return (
         <Modal isOpen={isOpen} onClose={handleClose} title="Create Account">
-
             <form onSubmit={handleSubmit} className="space-y-4">
                 {/* Name Fields */}
                 <div className="grid grid-cols-2 gap-3">
@@ -202,11 +201,7 @@ const SignupModal = ({ isOpen, onClose, onSwitchToLogin }) => {
                     />
                     <label htmlFor="termsAccepted" className="ml-2 block text-sm text-gray-900">
                         I accept the{' '}
-                        <button
-                            type="button"
-                            className="text-indigo-600 hover:text-indigo-500 underline bg-transparent border-none p-0 m-0 cursor-pointer"
-                            onClick={() => setShowTerms(true)}
-                        >
+                        <button type="button" className="text-indigo-600 hover:text-indigo-500 underline bg-transparent border-none p-0 m-0 cursor-pointer" onClick={() => setShowTerms(true)}>
                             Terms of Service
                         </button>
                     </label>

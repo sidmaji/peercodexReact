@@ -1,22 +1,21 @@
 import { addDoc, collection, getDocs, query, where } from 'firebase/firestore'
+import leoProfanity from 'leo-profanity'
 import { useState } from 'react'
-import { AP_SUBJECTS, SCHOOLS, GRADE_LEVELS, BAD_WORDS } from '../constants'
-import leoProfanity from 'leo-profanity';
+import Select from 'react-select'
+import { AP_SUBJECTS, BAD_WORDS, GRADE_LEVELS, SCHOOLS } from '../constants'
 import { db } from '../firebase'
 import { useAuth } from '../hooks/useAuth'
-import Select from 'react-select'
 
 const FindMentor = ({ onSearch }) => {
-
     function containsProfanity(text) {
-        const lower = text.toLowerCase();
+        const lower = text.toLowerCase()
         // Check custom list
-        const custom = BAD_WORDS.some(word => lower.includes(word));
+        const custom = BAD_WORDS.some((word) => lower.includes(word))
         // Check leo-profanity
-        leoProfanity.loadDictionary('en');
-        leoProfanity.add(BAD_WORDS); // Add custom bad words to leo-pro
-        const leo = leoProfanity.check(text);
-        return custom || leo;
+        leoProfanity.loadDictionary('en')
+        leoProfanity.add(BAD_WORDS) // Add custom bad words to leo-pro
+        const leo = leoProfanity.check(text)
+        return custom || leo
     }
     const [criteria, setCriteria] = useState({
         school: '',
@@ -37,10 +36,8 @@ const FindMentor = ({ onSearch }) => {
         setCriteria((prev) => ({ ...prev, [name]: value }))
     }
 
-    
-
     const handleSubjectsChange = (selectedOptions) => {
-        setCriteria((prev) => ({ ...prev, subjects: selectedOptions ? selectedOptions.map(opt => opt.value) : [] }))
+        setCriteria((prev) => ({ ...prev, subjects: selectedOptions ? selectedOptions.map((opt) => opt.value) : [] }))
     }
 
     // Real Firestore query for mentors
@@ -134,8 +131,8 @@ const FindMentor = ({ onSearch }) => {
                         <label className="block text-sm font-medium text-gray-700 mb-2">Subjects (Select at least one) *</label>
                         <Select
                             isMulti
-                            options={AP_SUBJECTS.map(subj => ({ value: subj, label: subj }))}
-                            value={criteria.subjects.map(subj => ({ value: subj, label: subj }))}
+                            options={AP_SUBJECTS.map((subj) => ({ value: subj, label: subj }))}
+                            value={criteria.subjects.map((subj) => ({ value: subj, label: subj }))}
                             onChange={handleSubjectsChange}
                             classNamePrefix="react-select"
                             placeholder="Select subjects..."
@@ -155,7 +152,7 @@ const FindMentor = ({ onSearch }) => {
                                     ...base,
                                     opacity: 1,
                                     color: '#374151',
-                                })
+                                }),
                             }}
                         />
                         {criteria.subjects.length > 0 && (
@@ -192,7 +189,8 @@ const FindMentor = ({ onSearch }) => {
                                             <div>
                                                 <div className="font-bold text-lg text-indigo-700">{mentor.name}</div>
                                                 <div className="text-xs text-gray-500">
-                                                    {mentor.school}{mentor.grade ? ` • ${mentor.grade}` : ''}
+                                                    {mentor.school}
+                                                    {mentor.grade ? ` • ${mentor.grade}` : ''}
                                                 </div>
                                             </div>
                                         </div>
@@ -251,10 +249,10 @@ const FindMentor = ({ onSearch }) => {
                                     disabled={sending || requestMsg.trim().length === 0 || requestMsg.length > 280}
                                     onClick={async () => {
                                         if (containsProfanity(requestMsg)) {
-                                            setToastMsg('Your message contains inappropriate language. Please revise and try again.');
-                                            return;
+                                            setToastMsg('Your message contains inappropriate language. Please revise and try again.')
+                                            return
                                         }
-                                        setSending(true);
+                                        setSending(true)
                                         try {
                                             // Check for existing request to this mentor
                                             const reqQuery = query(
@@ -262,12 +260,12 @@ const FindMentor = ({ onSearch }) => {
                                                 where('requesteeui', '==', modalMentor.uid),
                                                 where('requestedui', '==', currentUser?.uid || ''),
                                                 where('status', 'in', ['pending', 'accepted'])
-                                            );
-                                            const reqSnap = await getDocs(reqQuery);
+                                            )
+                                            const reqSnap = await getDocs(reqQuery)
                                             if (!reqSnap.empty) {
-                                                setToastMsg('You already have a pending or accepted request with this mentor.');
-                                                setSending(false);
-                                                return;
+                                                setToastMsg('You already have a pending or accepted request with this mentor.')
+                                                setSending(false)
+                                                return
                                             }
                                             await addDoc(collection(db, 'requests'), {
                                                 requesteeui: modalMentor.uid,
@@ -275,19 +273,19 @@ const FindMentor = ({ onSearch }) => {
                                                 message: requestMsg.trim(),
                                                 time: new Date().toISOString(),
                                                 status: 'pending',
-                                            });
-                                            setShowModal(false);
-                                            setToastMsg('Request sent successfully!');
+                                            })
+                                            setShowModal(false)
+                                            setToastMsg('Request sent successfully!')
                                         } catch (err) {
-                                            setToastMsg('Failed to send request.');
+                                            setToastMsg('Failed to send request.')
                                         }
-                                        setSending(false);
+                                        setSending(false)
                                     }}
                                 >
                                     {sending ? 'Sending...' : 'Send Request'}
                                 </button>
                             </div>
-                            
+
                             <div className="text-xs text-gray-500 mt-2">{requestMsg.length} / 280 characters</div>
                         </div>
                     </div>

@@ -1,10 +1,10 @@
 import { useState } from 'react'
-import LoginModal from './LoginModal'
-import SignupModal from './SignupModal'
-import ContactModal from './ContactModal'
-import PrivacyPolicy from './PrivacyPolicy'
 import AboutModal from './AboutModal'
 import CareerModal from './CareerModal'
+import ContactModal from './ContactModal'
+import LoginModal from './LoginModal'
+import PrivacyPolicy from './PrivacyPolicy'
+import SignupModal from './SignupModal'
 
 const LandingPage = ({ openTerms }) => {
     const [isMenuOpen, setIsMenuOpen] = useState(false)
@@ -126,9 +126,7 @@ const LandingPage = ({ openTerms }) => {
             {/* Marketplace Hero Section - Used Books */}
             <div className="min-h-[40vh] flex items-center justify-center bg-gradient-to-br from-yellow-50 to-orange-100 py-12">
                 <div className="w-full text-center animate-fade-in">
-                    <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-4 leading-tight">
-                        Marketplace for Used Books
-                    </h2>
+                    <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-4 leading-tight">Marketplace for Used Books</h2>
                     <p className="text-base sm:text-lg md:text-xl lg:text-2xl text-gray-700 mb-4 leading-relaxed px-2 max-w-2xl mx-auto">
                         Buy, sell, or exchange used textbooks and study materials with fellow students. Save money, reduce waste, and help others succeed by sharing your resources.
                     </p>
@@ -229,9 +227,9 @@ const LandingPage = ({ openTerms }) => {
                             <a href="/about" className="text-base lg:text-lg text-gray-400 hover:text-white transition-colors">
                                 <span
                                     className="cursor-pointer"
-                                    onClick={e => {
-                                        e.preventDefault();
-                                        setIsAboutModalOpen(true);
+                                    onClick={(e) => {
+                                        e.preventDefault()
+                                        setIsAboutModalOpen(true)
                                     }}
                                 >
                                     About
@@ -240,9 +238,9 @@ const LandingPage = ({ openTerms }) => {
                             <a href="/privacy" className="text-base lg:text-lg text-gray-400 hover:text-white transition-colors">
                                 <span
                                     className="cursor-pointer"
-                                    onClick={e => {
-                                        e.preventDefault();
-                                        setIsPrivacyModalOpen(true);
+                                    onClick={(e) => {
+                                        e.preventDefault()
+                                        setIsPrivacyModalOpen(true)
                                     }}
                                 >
                                     Privacy
@@ -250,9 +248,9 @@ const LandingPage = ({ openTerms }) => {
                             </a>
                             <button
                                 type="button"
-                                onClick={e => {
-                                    e.preventDefault();
-                                    openTerms();
+                                onClick={(e) => {
+                                    e.preventDefault()
+                                    openTerms()
                                 }}
                                 className="text-base lg:text-lg text-gray-400 hover:text-white transition-colors bg-transparent border-none cursor-pointer"
                             >
@@ -261,9 +259,9 @@ const LandingPage = ({ openTerms }) => {
                             <a href="/contact" className="text-base lg:text-lg text-gray-400 hover:text-white transition-colors">
                                 <span
                                     className="cursor-pointer"
-                                    onClick={e => {
-                                        e.preventDefault();
-                                        setIsContactModalOpen(true);
+                                    onClick={(e) => {
+                                        e.preventDefault()
+                                        setIsContactModalOpen(true)
                                     }}
                                 >
                                     Contact
@@ -272,9 +270,9 @@ const LandingPage = ({ openTerms }) => {
                             <a href="/career" className="text-base lg:text-lg text-gray-400 hover:text-white transition-colors">
                                 <span
                                     className="cursor-pointer"
-                                    onClick={e => {
-                                        e.preventDefault();
-                                        setIsCareerModalOpen(true);
+                                    onClick={(e) => {
+                                        e.preventDefault()
+                                        setIsCareerModalOpen(true)
                                     }}
                                 >
                                     Career Opportunities

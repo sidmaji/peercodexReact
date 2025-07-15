@@ -1,8 +1,8 @@
-import { useState, useEffect } from 'react'
-import { db } from '../firebase'
-import { collection, addDoc, query, where, getDocs, updateDoc, doc } from 'firebase/firestore'
-import { useAuth } from '../hooks/useAuth'
+import { addDoc, collection, doc, getDocs, query, updateDoc, where } from 'firebase/firestore'
+import { useEffect, useState } from 'react'
 import { toast } from 'react-hot-toast'
+import { db } from '../firebase'
+import { useAuth } from '../hooks/useAuth'
 
 const Marketplace = () => {
     // Pagination and search state
@@ -30,7 +30,7 @@ const Marketplace = () => {
         const q = query(collection(db, 'marketplace'), where('status', 'in', ['available', 'sold']))
         const snap = await getDocs(q)
         const items = []
-        snap.forEach(doc => {
+        snap.forEach((doc) => {
             items.push({ id: doc.id, ...doc.data() })
         })
         setBooks(items)
@@ -94,7 +94,7 @@ const Marketplace = () => {
     }
 
     const handleUpdateStatus = async (bookId, newStatus) => {
-        const book = books.find(b => b.id === bookId)
+        const book = books.find((b) => b.id === bookId)
         if (!book || book.userId !== currentUser?.uid) {
             toast.error('You can only update your own listings.')
             return
@@ -114,13 +114,12 @@ const Marketplace = () => {
                 <div>
                     <h1 className="text-2xl font-bold text-gray-900">Used Books</h1>
                     <div className="flex items-center mt-2">
-                        <span className="text-sm text-gray-600">Listings are automatically removed after <span className="font-semibold text-indigo-600">60 days</span>.</span>
+                        <span className="text-sm text-gray-600">
+                            Listings are automatically removed after <span className="font-semibold text-indigo-600">60 days</span>.
+                        </span>
                     </div>
                 </div>
-                <button
-                    onClick={() => setShowForm(true)}
-                    className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors"
-                >
+                <button onClick={() => setShowForm(true)} className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors">
                     + List a Book
                 </button>
             </div>
@@ -209,24 +208,14 @@ const Marketplace = () => {
                                         required
                                         className={`w-full px-3 py-2 border rounded-lg focus:ring-indigo-500 focus:border-indigo-500 ${formErrors.contact ? 'border-red-500' : 'border-gray-300'}`}
                                     />
-                                    {formErrors.contact && (
-                                        <p className="mt-1 text-sm text-red-600">{formErrors.contact}</p>
-                                    )}
+                                    {formErrors.contact && <p className="mt-1 text-sm text-red-600">{formErrors.contact}</p>}
                                 </div>
                             </div>
                             <div className="flex justify-end mt-8 space-x-2">
-                                <button
-                                    type="button"
-                                    className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:border-gray-400 transition-colors"
-                                    onClick={() => setShowForm(false)}
-                                >
+                                <button type="button" className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:border-gray-400 transition-colors" onClick={() => setShowForm(false)}>
                                     Cancel
                                 </button>
-                                <button
-                                    type="submit"
-                                    className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors disabled:opacity-50"
-                                    disabled={formLoading}
-                                >
+                                <button type="submit" className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors disabled:opacity-50" disabled={formLoading}>
                                     {formLoading ? 'Listing...' : 'List Book'}
                                 </button>
                             </div>
@@ -243,7 +232,10 @@ const Marketplace = () => {
                         <input
                             type="text"
                             value={searchTerm}
-                            onChange={e => { setSearchTerm(e.target.value); setPage(1); }}
+                            onChange={(e) => {
+                                setSearchTerm(e.target.value)
+                                setPage(1)
+                            }}
                             placeholder="Search books by name, author, year, contact, user..."
                             className="w-full md:w-96 px-3 py-2 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500"
                         />
@@ -261,7 +253,7 @@ const Marketplace = () => {
                 ) : (
                     (() => {
                         // Filter books by global search
-                        const filtered = books.filter(book => {
+                        const filtered = books.filter((book) => {
                             const term = searchTerm.trim().toLowerCase()
                             if (!term) return true
                             return (
@@ -287,20 +279,24 @@ const Marketplace = () => {
                                                     <span className="text-lg font-bold text-indigo-700">{book.name}</span>
                                                     <span className="text-xs px-2 py-1 rounded bg-indigo-50 text-indigo-600 font-semibold">{book.condition}</span>
                                                 </div>
-                                                <div className="text-sm text-gray-600 mb-1">by {book.author} ({book.year})</div>
+                                                <div className="text-sm text-gray-600 mb-1">
+                                                    by {book.author} ({book.year})
+                                                </div>
                                                 <div className="flex flex-wrap gap-2 text-sm">
                                                     <span className="bg-green-50 text-green-700 px-2 py-1 rounded">${book.price}</span>
                                                     <span className="bg-gray-50 text-gray-700 px-2 py-1 rounded">Contact: {book.contact}</span>
                                                 </div>
-                                                <div className="text-xs text-gray-500 mt-2">Listed by <span className="font-semibold">{book.userName}</span> on {book.listedDate ? new Date(book.listedDate).toLocaleDateString() : ''}</div>
+                                                <div className="text-xs text-gray-500 mt-2">
+                                                    Listed by <span className="font-semibold">{book.userName}</span> on {book.listedDate ? new Date(book.listedDate).toLocaleDateString() : ''}
+                                                </div>
                                                 <div className="flex items-center gap-2 mt-2">
-                                                    <span className={`text-xs font-semibold px-2 py-1 rounded ${book.status === 'available' ? 'bg-blue-100 text-blue-700' : 'bg-gray-200 text-gray-600'}`}>{book.status}</span>
+                                                    <span
+                                                        className={`text-xs font-semibold px-2 py-1 rounded ${book.status === 'available' ? 'bg-blue-100 text-blue-700' : 'bg-gray-200 text-gray-600'}`}
+                                                    >
+                                                        {book.status}
+                                                    </span>
                                                     {book.userId === currentUser?.uid && (
-                                                        <select
-                                                            value={book.status}
-                                                            onChange={e => handleUpdateStatus(book.id, e.target.value)}
-                                                            className="px-2 py-1 border rounded text-xs"
-                                                        >
+                                                        <select value={book.status} onChange={(e) => handleUpdateStatus(book.id, e.target.value)} className="px-2 py-1 border rounded text-xs">
                                                             <option value="available">Available</option>
                                                             <option value="sold">Sold</option>
                                                         </select>
@@ -313,11 +309,7 @@ const Marketplace = () => {
                                 {/* Pagination */}
                                 {totalPages > 1 && (
                                     <div className="flex justify-center items-center gap-2 mt-6">
-                                        <button
-                                            className="px-3 py-1 rounded bg-gray-200 text-gray-700 font-medium disabled:opacity-50"
-                                            onClick={() => setPage(page - 1)}
-                                            disabled={page === 1}
-                                        >
+                                        <button className="px-3 py-1 rounded bg-gray-200 text-gray-700 font-medium disabled:opacity-50" onClick={() => setPage(page - 1)} disabled={page === 1}>
                                             Prev
                                         </button>
                                         <span className="text-sm font-medium text-gray-700">

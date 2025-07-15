@@ -1,44 +1,39 @@
-import { useState } from 'react';
-import { auth } from '../firebase';
-import { sendPasswordResetEmail } from 'firebase/auth';
+import { sendPasswordResetEmail } from 'firebase/auth'
+import { useState } from 'react'
+import { auth } from '../firebase'
 
 const ResetPassword = ({ onClose }) => {
-    const [email, setEmail] = useState('');
-    const [submitted, setSubmitted] = useState(false);
-    const [error, setError] = useState('');
+    const [email, setEmail] = useState('')
+    const [submitted, setSubmitted] = useState(false)
+    const [error, setError] = useState('')
 
     const handleSubmit = async (e) => {
-        e.preventDefault();
+        e.preventDefault()
         if (!email.trim()) {
-            setError('Please enter your email address.');
-            return;
+            setError('Please enter your email address.')
+            return
         }
         try {
-            await sendPasswordResetEmail(auth, email);
-            setSubmitted(true);
-            setError('');
+            await sendPasswordResetEmail(auth, email)
+            setSubmitted(true)
+            setError('')
         } catch (err) {
-            setError(err.message || 'Failed to send reset email.');
+            setError(err.message || 'Failed to send reset email.')
         }
-    };
+    }
 
     // Close modal and return to LoginModal
     const handleClose = () => {
         if (typeof onClose === 'function') {
-            onClose();
+            onClose()
         }
-    };
+    }
 
     return (
         <div className="fixed inset-0 bg-black/100 flex items-center justify-center z-50">
             <div className="bg-white rounded-xl shadow-lg p-8 w-full max-w-md relative">
                 {/* Close button */}
-                <button
-                    type="button"
-                    aria-label="Close"
-                    onClick={handleClose}
-                    className="absolute top-4 right-4 text-gray-400 hover:text-gray-700 text-xl font-bold focus:outline-none"
-                >
+                <button type="button" aria-label="Close" onClick={handleClose} className="absolute top-4 right-4 text-gray-400 hover:text-gray-700 text-xl font-bold focus:outline-none">
                     &times;
                 </button>
                 <h2 className="text-2xl font-bold mb-6 text-center">Reset Password</h2>
@@ -50,7 +45,7 @@ const ResetPassword = ({ onClose }) => {
                 <form onSubmit={handleSubmit} className="space-y-4">
                     <div>
                         <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
-                            Email 
+                            Email
                         </label>
                         <input
                             id="email"
@@ -59,7 +54,7 @@ const ResetPassword = ({ onClose }) => {
                             autoComplete="email"
                             required
                             value={email}
-                            onChange={e => setEmail(e.target.value)}
+                            onChange={(e) => setEmail(e.target.value)}
                             className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
                             placeholder="Enter your email"
                         />
@@ -74,7 +69,7 @@ const ResetPassword = ({ onClose }) => {
                 </form>
             </div>
         </div>
-    );
-};
+    )
+}
 
-export default ResetPassword;
+export default ResetPassword
