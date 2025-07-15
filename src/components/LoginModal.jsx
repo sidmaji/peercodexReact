@@ -97,11 +97,7 @@ const LoginModal = ({ isOpen, onClose, onSwitchToSignup }) => {
 
                     <div className="flex items-center justify-between">
                         <div className="text-sm">
-                            <button
-                                type="button"
-                                className="font-medium text-indigo-600 hover:text-indigo-500 bg-transparent p-0 m-0 border-none cursor-pointer"
-                                onClick={() => setShowReset(true)}
-                            >
+                            <button type="button" className="font-medium text-indigo-600 hover:text-indigo-500 bg-transparent p-0 m-0 border-none cursor-pointer" onClick={() => setShowReset(true)}>
                                 Reset Password
                             </button>
                         </div>
@@ -125,9 +121,7 @@ const LoginModal = ({ isOpen, onClose, onSwitchToSignup }) => {
                     </div>
                 </form>
             </Modal>
-            {showReset && (
-                <ResetPassword onClose={() => setShowReset(false)} />
-            )}
+            {showReset && <ResetPassword onClose={() => setShowReset(false)} />}
         </>
     )
 }
