@@ -43,8 +43,8 @@ service cloud.firestore {
     }
     
     match /contactMessages/{docId} {
-    allow create: if true;
-    allow read: if false; // Optional: no one can read messages
+  allow create: if true;
+  allow read: if false; // Optional: no one can read messages
 }
   }
 }
