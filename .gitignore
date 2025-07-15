@@ -14,7 +14,7 @@ dist-ssr
 .firebase
 *.cache*
 # Ignore the firebase configuration file
-firebase.js
+# firebase.js
 
 # Editor directories and files
 .vscode/*
