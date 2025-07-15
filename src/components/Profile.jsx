@@ -276,10 +276,6 @@ const Profile = ({ standalone = true }) => {
                         <p className="text-gray-900">{userProfile.email}</p>
                     </div>
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Date of Birth</label>
-                        <p className="text-gray-900">{userProfile.dateOfBirth}</p>
-                    </div>
-                    <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">School *</label>
                         {isEditing ? (
                             <div>

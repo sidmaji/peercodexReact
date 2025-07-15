@@ -31,3 +31,7 @@ git checkout -b feature/marketplace
 git add .
 git commit -m "Add marketplace feature for used books"
 git push -u origin feature/marketplace
+
+
+>git rm --cached src/firebase.js
+rm 'src/firebase.js'

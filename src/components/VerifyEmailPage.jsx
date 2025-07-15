@@ -127,12 +127,12 @@ const VerifyEmailPage = () => {
                             <div className="mt-6 pt-6 border-t border-gray-300">
                                 <p className="text-xs text-gray-500 text-center">Make sure to check your spam folder if you don't see the email in your inbox.</p>
                             </div>
-
+                            {/* Redirect to login if email is verified *
                             <div className="text-center">
                                 <Link to="/login" className="text-sm text-indigo-600 hover:text-indigo-500">
                                     Back to login
                                 </Link>
-                            </div>
+                            </div>/ */}
                         </div>
                     </div>
                 </div>

@@ -16,7 +16,7 @@ const SignupModal = ({ isOpen, onClose, onSwitchToLogin }) => {
         confirmPassword: '',
         firstName: '',
         lastName: '',
-        dateOfBirth: '',
+        dateOfBirth: '1/1/1900',
         termsAccepted: false,
     })
     const [loading, setLoading] = useState(false)
@@ -53,10 +53,8 @@ const SignupModal = ({ isOpen, onClose, onSwitchToLogin }) => {
             return
         }
 
-        if (!formData.dateOfBirth) {
-            toast.error('Please provide your date of birth')
-            return
-        }
+
+        // dateOfBirth is now optional
 
         setLoading(true)
         try {
@@ -171,10 +169,10 @@ const SignupModal = ({ isOpen, onClose, onSwitchToLogin }) => {
                     />
                 </div>
 
-                {/* Date of Birth */}
+                {/* Date of Birth 
                 <div className="relative">
                     <label htmlFor="dateOfBirth" className="block text-sm font-medium text-gray-700 mb-1">
-                        Date of Birth <span className="text-red-600">*</span>
+                        Date of Birth <span className="text-gray-500">(optional)</span>
                     </label>
                     <input
                         id="dateOfBirth"
@@ -182,12 +180,11 @@ const SignupModal = ({ isOpen, onClose, onSwitchToLogin }) => {
                         type="date"
                         value={formData.dateOfBirth}
                         onChange={handleChange}
-                        required
                         max={new Date(new Date().setFullYear(new Date().getFullYear() - 13)).toISOString().split('T')[0]}
                         min={new Date(new Date().setFullYear(new Date().getFullYear() - 22)).toISOString().split('T')[0]}
                         className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
                     />
-                </div>
+                </div>*/}
 
                 {/* Terms of Service */}
                 <div className="flex items-start">
